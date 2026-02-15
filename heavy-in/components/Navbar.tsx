@@ -1,4 +1,4 @@
-import { Bookmark, Home, Plus, Search } from "lucide-react";
+import { Bookmark, Home, Plus, Search, User } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -10,7 +10,7 @@ interface NavLinkProps {
 
 function Navbar() {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-(--bg-secondary)/90 backdrop-blur-xl border-t border-heavy-border w-full flex items-center justify-center px-6 py-3 z-50">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-(--bg-secondary)/70 backdrop-blur-xl border-t border-heavy-border w-full flex items-center justify-center px-6 py-3 z-50">
       <div className="flex items-center justify-around">
         <NavLink href="/" icon={<Home size={24} />} label="Home" />
         <NavLink href="/Explore" icon={<Search size={24} />} label="Explore" />
@@ -20,7 +20,7 @@ function Navbar() {
           icon={<Bookmark size={24} />}
           label="Saved"
         />
-        <NavLink href="/Profile" icon={<Home size={24} />} label="Profile" />
+        <NavLink href="/Profile" icon={<User size={24} />} label="Profile" />
       </div>
     </nav>
   );
