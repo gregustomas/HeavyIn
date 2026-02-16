@@ -6,11 +6,9 @@ import {
   Heart,
   MessageCircle,
   Send,
-  User,
   Zap,
 } from "lucide-react";
 import Image from "next/image";
-import cbum from "../app/cbum.avif";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -22,6 +20,7 @@ interface WorkoutData {
   };
   title: string;
   description: string;
+  image: string;
   split: string;
   exercises: { exercise: string; sets: number; note: string }[];
   time: number;
@@ -38,10 +37,11 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
     user,
     title,
     description,
+    image,
     split,
     exercises,
     time,
-    stats: { likes, commentsCount, shares }, // <--- TOHLE JE ONO
+    stats: { likes, commentsCount, shares },
   } = data;
 
   const exercisesCount = exercises.length;
@@ -51,10 +51,11 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
   return (
     <div className="bg-heavy-card rounded my-6">
       <div className="flex items-center justify-between p-3 pt-4">
+        {/* user */}
         <div className="flex gap-2 items-center w-full">
           <div className="relative w-8 h-8 rounded-full overflow-hidden bg-heavy-surface border border-heavy-border">
             <Image
-              src={user.avatarUrl || cbum}
+              src={user.avatarUrl || "/cbum.avif"}
               alt={user.username}
               fill
               className="object-cover"
@@ -69,9 +70,9 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
         </button>
       </div>
 
-      <Link href={`http://localhost:3000/workout/` + id}>
+      <Link href={`/workout/` + id}>
         <div className="w-full h-80 my-2 bg-heavy-surface relative">
-          <Image src={cbum} alt="" fill className="object-cover" />
+          <Image src={image} alt="" fill className="object-cover" />
         </div>
       </Link>
 
