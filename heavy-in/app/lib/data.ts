@@ -13,6 +13,7 @@ export const DUMMY_WORKOUTS = [
     id: "w1",
     userId: "u1",
     title: "Upper/Lower: A",
+    image: "./app/cbum.avif",
     description:
       "Dneska to byl masakr. Bench press šel nahoru jako nic. Příště přihodíme další kotouč!...",
     split: "Full Body",

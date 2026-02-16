@@ -12,8 +12,10 @@ import {
 import Image from "next/image";
 import cbum from "../app/cbum.avif";
 import { useState } from "react";
+import Link from "next/link";
 
 interface WorkoutData {
+  id: string;
   user: {
     username: string;
     avatarUrl?: string;
@@ -32,6 +34,7 @@ interface WorkoutData {
 
 function WorkoutCard({ data }: { data: WorkoutData }) {
   const {
+    id,
     user,
     title,
     description,
@@ -66,9 +69,11 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
         </button>
       </div>
 
-      <div className="w-full h-80 my-2 bg-heavy-surface relative">
-        <Image src={cbum} alt="" fill className="object-cover" />
-      </div>
+      <Link href={`http://localhost:3000/workout/` + id}>
+        <div className="w-full h-80 my-2 bg-heavy-surface relative">
+          <Image src={cbum} alt="" fill className="object-cover" />
+        </div>
+      </Link>
 
       <div className="p-4 grid gap-6">
         <div className="flex justify-between items-center">
