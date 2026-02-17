@@ -49,6 +49,20 @@
   );
 }
 
+@utility label-heavy {
+  @apply text-[10px] font-black uppercase tracking-widest text-heavy-muted ml-1 mb-1 block;
+}
+
+@utility input-heavy {
+  @apply w-full p-4 rounded-xl border-2 border-heavy-border bg-heavy-card 
+         text-heavy-main placeholder:text-heavy-muted/40 outline-none 
+         hover:border-heavy-teal/50 focus:border-heavy-teal transition-all font-bold;
+}
+
+@utility textarea-heavy {
+  @apply input-heavy min-h-[100px] resize-none;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
