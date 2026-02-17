@@ -1,4 +1,5 @@
 import { DUMMY_WORKOUTS, USERS } from "@/app/lib/data";
+import BackBtn from "@/components/BackBtn";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,23 +24,10 @@ async function page({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-heavy-bg text-heavy-main pb-20">
       {/* Back Button */}
-      <div className="absolute top-6 left-6 z-50">
-        <Link
-          href="/"
-          className="flex items-center gap-2 bg-heavy-surface/40 backdrop-blur-xl px-4 py-2 rounded-full border border-heavy-border hover:bg-heavy-surface/60 transition-all shadow-2xl group"
-        >
-          <ArrowLeft
-            size={18}
-            className="text-heavy-teal group-hover:-translate-x-1 transition-transform"
-          />
-          <span className="text-[10px] font-black uppercase tracking-widest text-heavy-main">
-            Back
-          </span>
-        </Link>
-      </div>
+      <BackBtn link="/"/>
 
       {/* Hero Header s obrázkem */}
-      <div className="relative w-full h-[450px]">
+      <div className="relative w-full h-112.5">
         <Image
           src={workout.image || "/cbum.avif"}
           alt={workout.title}
@@ -48,7 +36,7 @@ async function page({ params }: PageProps) {
           className="object-cover"
         />
         {/* Gradient pro čitelnost postavený na tvém pozadí */}
-        <div className="absolute inset-0 bg-gradient-to-t from-heavy-bg via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-linear-to-t from-heavy-bg via-transparent to-black/20" />
 
         {/* Title Over Image */}
         <div className="absolute bottom-0 left-0 p-8 w-full">
