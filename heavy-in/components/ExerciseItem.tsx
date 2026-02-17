@@ -66,7 +66,7 @@ export default function ExerciseItem({
         <div>
           <label className="label-heavy">Note</label>
           <textarea
-            className="textarea-heavy p-3 min-h-[80px]"
+            className="textarea-heavy p-3 min-h-20"
             placeholder="Focus on eccentric phase..."
           />
         </div>
