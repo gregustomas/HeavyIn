@@ -2,9 +2,19 @@
 
 import { Trash2 } from "lucide-react";
 
+export interface ExerciseData {
+  id: string;
+  name: string;
+  sets: string;
+  reps: string;
+  note: string;
+}
+
 interface ExerciseItemProps {
+  data: ExerciseData;
   index: number;
-  onRemove: (index: number) => void;
+  onUpdate: (index: number, updatedData: ExerciseData) => void;
+  onRemove: (index: string) => void;
   isRemovable: boolean;
 }
 
@@ -12,7 +22,13 @@ export default function ExerciseItem({
   index,
   onRemove,
   isRemovable,
+  data,
+  onUpdate,
 }: ExerciseItemProps) {
+  const handleChange = (field: keyof ExerciseData, value: string) => {
+    onUpdate(index, { ...data, [field]: value });
+  };
+
   return (
     <div className="w-full border-heavy-border border-2 rounded-2xl p-5 bg-heavy-card relative group transition-all hover:border-heavy-teal/30">
       {/* Header cviku */}
@@ -29,7 +45,7 @@ export default function ExerciseItem({
         {isRemovable && (
           <button
             type="button"
-            onClick={() => onRemove(index)}
+            onClick={() => onRemove(data.id)}
             className="p-2 hover:bg-heavy-coral/10 rounded-lg transition-colors group/trash"
           >
             <Trash2
@@ -48,18 +64,32 @@ export default function ExerciseItem({
             type="text"
             className="input-heavy p-3"
             placeholder="e.g. Bench Press"
+            value={data.name}
+            onChange={(e) => handleChange("name", e.target.value)}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label-heavy">Sets</label>
-            <input type="number" placeholder="0" className="input-heavy p-3" />
+            <input
+              type="number"
+              placeholder="0"
+              className="input-heavy p-3"
+              value={data.sets}
+              onChange={(e) => handleChange("sets", e.target.value)}
+            />
           </div>
 
           <div>
             <label className="label-heavy">Reps</label>
-            <input type="text" placeholder="6-8" className="input-heavy p-3" />
+            <input
+              type="text"
+              placeholder="6-8"
+              className="input-heavy p-3"
+              value={data.reps}
+              onChange={(e) => handleChange("reps", e.target.value)}
+            />
           </div>
         </div>
 
@@ -68,6 +98,8 @@ export default function ExerciseItem({
           <textarea
             className="textarea-heavy p-3 min-h-20"
             placeholder="Focus on eccentric phase..."
+            value={data.note}
+            onChange={(e) => handleChange("note", e.target.value)}
           />
         </div>
       </div>
