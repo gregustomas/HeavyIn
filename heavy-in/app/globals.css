@@ -60,7 +60,7 @@
 }
 
 @utility textarea-heavy {
-  @apply input-heavy min-h-[100px] resize-none;
+  @apply input-heavy min-h-30 resize-none;
 }
 
 body {

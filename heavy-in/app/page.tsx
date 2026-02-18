@@ -3,7 +3,7 @@ import { DUMMY_WORKOUTS, USERS } from "./lib/data";
 
 export default function Home() {
   return (
-    <main className="p-4 md:p-8 pb-30 max-w-7xl mx-auto">
+    <main className="md:p-8 pb-30 max-w-7xl mx-auto">
       <div className="mb-8">
         <h1 className="text-heavy-coral text-4xl font-black tracking-tighter uppercase">
           HeavyIn
