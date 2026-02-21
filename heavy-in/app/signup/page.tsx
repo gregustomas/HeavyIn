@@ -5,8 +5,9 @@ import { FormField } from "@/components/FormField";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import { useRouter } from "next/navigation";
+import { doc, setDoc } from "firebase/firestore";
 
 function SignupPage() {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ function SignupPage() {
 
   if (user) return null;
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -34,8 +35,23 @@ function SignupPage() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/");
+      const userCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredentials.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        bio: "",
+        likedWorkouts: [],
+        savedWorkouts: [],
+        createdWorkouts: [],
+        createdAt: new Date().toISOString(),
+      });
     } catch (err: any) {
       if (err.code === "auth/email-already-in-use") {
         setError("Tento e-mail už je obsazený.");
@@ -57,7 +73,7 @@ function SignupPage() {
           </p>
         </header>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleSignup} className="space-y-6">
           {error && (
             <div className="bg-red-900/20 border-l-4 border-red-600 p-4 mb-4">
               <p className="text-red-500 font-black text-xs tracking-widest">

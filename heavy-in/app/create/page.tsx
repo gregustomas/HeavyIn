@@ -8,10 +8,17 @@ import { FormField } from "@/components/FormField";
 import ImageUpload from "@/components/ImageUpload";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
 
 const SPLIT = ["Bro split", "Fullbody", "Upper/Lower", "Custom"];
 
 function CreateWorkoutPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const [workoutData, setWorkoutData] = useState({
     title: "",
     description: "",
@@ -48,15 +55,36 @@ function CreateWorkoutPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const workout = {
-      ...workoutData,
-      createdAt: new Date().toISOString(),
-    };
+    console.log("Workout info:", workoutData);
+    console.log("Workout list:", exerciseList);
 
-    console.log("Workout info:", workout);
-    console.log("Workout list:", exerciseList)
+    handleSaveWorkout(workoutData);
+  };
 
-    // save to DB
+  const handleSaveWorkout = async (workoutData: any) => {
+    if (!user) {
+      alert("Pro uložení tréninku se musíš přihlásit.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "workouts"), {
+        userId: user.uid,
+        authorName: user.displayName || user.email?.split("@")[0],
+        title: workoutData.title,
+        description: workoutData.description,
+        split: workoutData.split,
+        image: workoutData.image,
+        exercises: exerciseList,
+        likes: [],
+        likeCount: 0,
+        createdAt: serverTimestamp(),
+      });
+
+      router.push("/");
+    } catch (err) {
+      console.error("Chyba při ukládání do Firestore:", err);
+    }
   };
 
   return (
