@@ -35,14 +35,39 @@ function WorkoutCard({ data }: { data: any }) {
     exercises = [],
     likes = [],
     likeCount = 0,
+    savedBy = [],
     commentCount = 0,
     shareCount = 0,
   } = data;
 
   const exercisesCount = exercises.length;
-  const [isSaved, setIsSaved] = useState(false);
   const { user: currentUser } = useAuth();
   const [isLiked, setIsLiked] = useState(likes.includes(currentUser?.uid));
+  const [isSaved, setIsSaved] = useState(savedBy.includes(currentUser?.uid));
+
+  useEffect(() => {
+    setIsSaved(savedBy.includes(currentUser?.uid));
+  }, [savedBy, currentUser]);
+
+  const handleSave = async () => {
+    if (!currentUser) return alert("Musíš se přihlásit!");
+
+    const workoutRef = doc(db, "workouts", id);
+    const wasSaved = isSaved;
+
+    setIsSaved(!wasSaved);
+
+    try {
+      await updateDoc(workoutRef, {
+        savedBy: wasSaved
+          ? arrayRemove(currentUser.uid)
+          : arrayUnion(currentUser.uid),
+      });
+    } catch (err) {
+      console.error("Chyba při ukládání:", err);
+      setIsSaved(wasSaved);
+    }
+  };
 
   useEffect(() => {
     setIsLiked(likes.includes(currentUser?.uid));
@@ -65,7 +90,7 @@ function WorkoutCard({ data }: { data: any }) {
       });
     } catch (err) {
       console.error("Lajk se nepovedl:", err);
-      setIsLiked(wasLiked); // Vrátíme zpět při chybě
+      setIsLiked(wasLiked);
     }
   };
 
@@ -145,7 +170,7 @@ function WorkoutCard({ data }: { data: any }) {
 
           {/* BOOKMARK (SAVED) */}
           <button
-            onClick={() => setIsSaved(!isSaved)}
+            onClick={() => handleSave()}
             className={`transition-all active:scale-150 ${isSaved ? "text-yellow-300" : "text-heavy-main hover:text-yellow-300"}`}
           >
             <Bookmark
