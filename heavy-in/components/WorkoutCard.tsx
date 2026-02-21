@@ -1,52 +1,73 @@
 "use client";
 
-import {
-  Bookmark,
-  Flame,
-  Heart,
-  MessageCircle,
-  Send,
-  Zap,
-} from "lucide-react";
+import { Bookmark, Flame, Heart, MessageCircle, Send, Zap } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { db } from "@/app/firebase";
 
 interface WorkoutData {
   id: string;
-  user: {
-    username: string;
-    avatarUrl?: string;
-  };
+  authorName?: string;
+  userId: string;
   title: string;
   description: string;
   image: string;
   split: string;
-  exercises: { exercise: string; sets: number; note: string }[];
-  time: number;
-  stats: {
-    likes: number;
-    commentsCount: number;
-    shares: number;
-  };
+  exercises: any[];
+  likes: string[];
+  likeCount?: number;
+  commentCount?: number;
+  shareCount?: number;
+  createdAt?: any;
 }
 
-function WorkoutCard({ data }: { data: WorkoutData }) {
+function WorkoutCard({ data }: { data: any }) {
   const {
     id,
-    user,
+    authorName,
     title,
     description,
     image,
     split,
-    exercises,
-    time,
-    stats: { likes, commentsCount, shares },
+    exercises = [],
+    likes = [],
+    likeCount = 0,
+    commentCount = 0,
+    shareCount = 0,
   } = data;
 
   const exercisesCount = exercises.length;
-  const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const { user: currentUser } = useAuth();
+  const [isLiked, setIsLiked] = useState(likes.includes(currentUser?.uid));
+
+  useEffect(() => {
+    setIsLiked(likes.includes(currentUser?.uid));
+  }, [likes, currentUser]);
+
+  const handleLike = async () => {
+    if (!currentUser) return alert("Musíš se přihlásit!");
+
+    const workoutRef = doc(db, "workouts", id);
+    const wasLiked = isLiked;
+
+    setIsLiked(!wasLiked);
+
+    try {
+      await updateDoc(workoutRef, {
+        likes: wasLiked
+          ? arrayRemove(currentUser?.uid)
+          : arrayUnion(currentUser?.uid),
+        likeCount: wasLiked ? likeCount - 1 : likeCount + 1,
+      });
+    } catch (err) {
+      console.error("Lajk se nepovedl:", err);
+      setIsLiked(wasLiked); // Vrátíme zpět při chybě
+    }
+  };
 
   return (
     <div className="bg-heavy-card rounded my-6">
@@ -55,14 +76,17 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
         <div className="flex gap-2 items-center w-full">
           <div className="relative w-8 h-8 rounded-full overflow-hidden bg-heavy-surface border border-heavy-border">
             <Image
-              src={user.avatarUrl || "/cbum.avif"}
-              alt={user.username}
+              src={"/cbum.avif"}
+              alt={authorName || "User"}
               fill
               className="object-cover"
             />
           </div>
           <span className="font-bold text-sm leading-none text-heavy-main">
-            {user.username}
+            {authorName}
+          </span>
+          <span className="text-[10px] text-heavy-muted block uppercase tracking-widest">
+            {data.createdAt?.toDate().toLocaleDateString()}
           </span>
         </div>
         <button className="px-5 py-1.5 bg-heavy-teal hover:bg-heavy-teal/90 text-white text-xs font-black uppercase tracking-tight rounded-lg transition-all active:scale-95 shadow-sm shrink-0">
@@ -82,7 +106,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
             {/* LIKE */}
             <div className="flex gap-1.5 items-center">
               <button
-                onClick={() => setIsLiked(!isLiked)}
+                onClick={() => handleLike()}
                 className={`group transition-all active:scale-125 ${isLiked ? "text-red-500" : "text-heavy-main hover:text-red-500"}`}
               >
                 <Heart
@@ -94,7 +118,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
               <span
                 className={`text-xs font-black tracking-tighter transition-colors ${isLiked ? "text-red-500" : "text-heavy-muted"}`}
               >
-                {(likes || 0) + (isLiked ? 1 : 0)}
+                {likes.length}
               </span>
             </div>
 
@@ -104,7 +128,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
                 <MessageCircle size={22} />
               </button>
               <span className="text-xs font-black tracking-tighter text-heavy-muted">
-                {commentsCount || 0}
+                {commentCount || 0}
               </span>
             </div>
 
@@ -114,7 +138,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
                 <Send size={22} />
               </button>
               <span className="text-xs font-black tracking-tighter text-heavy-muted">
-                {shares || 0}
+                {shareCount || 0}
               </span>
             </div>
           </div>
@@ -155,12 +179,6 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
           <span className="flex gap-1.5 items-center bg-heavy-surface/40 px-3 py-1.5 rounded-full border border-heavy-border text-heavy-muted text-[11px] font-black uppercase tracking-wider">
             <Zap size={14} className="text-amber-400 fill-amber-400/20" />
             {split || "custom"}
-          </span>
-
-          {/* Time */}
-          <span className="flex gap-1.5 items-center bg-heavy-surface/40 px-3 py-1.5 rounded-full border border-heavy-border text-heavy-muted text-[11px] font-black uppercase tracking-wider">
-            <Zap size={14} className="text-heavy-teal fill-heavy-teal/20" />
-            {time || 0} min
           </span>
         </div>
       </div>
