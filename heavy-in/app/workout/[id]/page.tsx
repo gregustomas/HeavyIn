@@ -1,19 +1,21 @@
-import { DUMMY_WORKOUTS, USERS } from "@/app/lib/data";
+import { db } from "@/app/firebase";
+import { USERS } from "@/app/lib/data";
 import BackBtn from "@/components/BackBtn";
-import { ArrowLeft } from "lucide-react";
+import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
-import Link from "next/link";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function page({ params }: PageProps) {
+async function WorkoutDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const workout = DUMMY_WORKOUTS.find((w) => w.id === id);
-  const user = USERS.find((u) => u.id === workout?.userId);
 
-  if (!workout || !user) {
+  const workoutRef = doc(db, "workouts", id); // reference na kolekci
+  const workouSnap = await getDoc(workoutRef); // získání dat
+
+  // kontrola jestli data existují
+  if (!workouSnap.exists()) {
     return (
       <main className="p-4 text-heavy-main bg-heavy-bg">
         Workout nebyl nalezen.
@@ -21,10 +23,17 @@ async function page({ params }: PageProps) {
     );
   }
 
+  const workout = workouSnap.data() as any;
+  const user = USERS.find((u) => u.id === workout?.userId) || {
+    username: "User",
+    avatarUrl: "/cbum.avif",
+  };
+
   return (
-    <main className="min-h-screen bg-heavy-bg text-heavy-main pb-20">
-      {/* Back Button */}
-      <BackBtn link="/"/>
+    <main className="min-h-screen bg-heavy-bg text-heavy-main pb-20 relative">
+      <div className="absolute top-4 left-4 z-10">
+        <BackBtn link="/" />
+      </div>
 
       {/* Hero Header s obrázkem */}
       <div className="relative w-full h-112.5">
@@ -43,9 +52,6 @@ async function page({ params }: PageProps) {
           <div className="flex gap-2 mb-3">
             <span className="bg-heavy-teal text-heavy-bg text-[10px] font-black px-2 py-1 rounded uppercase tracking-tighter">
               {workout.split}
-            </span>
-            <span className="bg-heavy-surface/30 backdrop-blur-md text-heavy-main text-[10px] font-black px-2 py-1 rounded uppercase border border-heavy-border">
-              {workout.time} MIN
             </span>
           </div>
           <h1 className="text-5xl font-black italic uppercase tracking-tighter leading-[0.85] text-white">
@@ -97,7 +103,7 @@ async function page({ params }: PageProps) {
           </div>
 
           <div className="grid gap-4">
-            {workout.exercises.map((ex, index) => (
+            {workout.exercises?.map((ex: any, index: number) => (
               <div
                 key={index}
                 className="group flex justify-between items-center p-5 bg-heavy-card rounded-3xl border border-heavy-border hover:border-heavy-teal/40 transition-all duration-500"
@@ -108,7 +114,7 @@ async function page({ params }: PageProps) {
                   </span>
                   <div>
                     <h3 className="font-black uppercase italic text-heavy-main text-xl leading-none">
-                      {ex.exercise}
+                      {ex.name}
                     </h3>
                     <p className="text-heavy-muted text-xs mt-1.5 font-medium tracking-wide">
                       {ex.note}
@@ -132,4 +138,4 @@ async function page({ params }: PageProps) {
   );
 }
 
-export default page;
+export default WorkoutDetailPage;
