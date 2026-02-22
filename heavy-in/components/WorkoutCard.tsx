@@ -5,8 +5,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { db } from "@/app/firebase";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { auth, db } from "@/app/firebase";
 
 interface WorkoutData {
   id: string;
@@ -27,7 +33,7 @@ interface WorkoutData {
 function WorkoutCard({ data }: { data: any }) {
   const {
     id,
-    authorName,
+    userId,
     title,
     description,
     image,
@@ -42,8 +48,30 @@ function WorkoutCard({ data }: { data: any }) {
 
   const exercisesCount = exercises.length;
   const { user: currentUser } = useAuth();
+  const [author, setAuthor] = useState<any>(null);
   const [isLiked, setIsLiked] = useState(likes.includes(currentUser?.uid));
   const [isSaved, setIsSaved] = useState(savedBy.includes(currentUser?.uid));
+
+  useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
+    const fetchAuthor = async () => {
+      try {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          setAuthor(userSnap.data());
+        }
+      } catch (err) {
+        console.error("Chyba při načítání autora:", err);
+      }
+    };
+
+    fetchAuthor();
+  }, [userId]);
 
   useEffect(() => {
     setIsSaved(savedBy.includes(currentUser?.uid));
@@ -101,14 +129,14 @@ function WorkoutCard({ data }: { data: any }) {
         <div className="flex gap-2 items-center w-full">
           <div className="relative w-8 h-8 rounded-full overflow-hidden bg-heavy-surface border border-heavy-border">
             <Image
-              src={"/cbum.avif"}
-              alt={authorName || "User"}
+              src={author?.avatarUrl || "/user.png"}
+              alt={author?.username || "User"}
               fill
               className="object-cover"
             />
           </div>
           <span className="font-bold text-sm leading-none text-heavy-main">
-            {authorName}
+            {author?.username || "User"}
           </span>
           <span className="text-[10px] text-heavy-muted block uppercase tracking-widest">
             {data.createdAt?.toDate().toLocaleDateString()}
@@ -121,7 +149,7 @@ function WorkoutCard({ data }: { data: any }) {
 
       <Link href={`/workout/` + id}>
         <div className="w-full h-80 my-2 bg-heavy-surface relative">
-          <Image src={image} alt="" fill className="object-cover" />
+          <Image src={image} alt={title} fill className="object-cover" />
         </div>
       </Link>
 

@@ -7,10 +7,13 @@ import { useAuth } from "../context/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { useRouter } from "next/navigation";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 function SignupPage() {
-  const [email, setEmail] = useState("");
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+  });
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
@@ -37,7 +40,7 @@ function SignupPage() {
     try {
       const userCredentials = await createUserWithEmailAndPassword(
         auth,
-        email,
+        userData.email,
         password,
       );
       const user = userCredentials.user;
@@ -45,16 +48,19 @@ function SignupPage() {
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName,
+        username: userData.username,
         bio: "",
+        avatarUrl: "/user.png",
         likedWorkouts: [],
         savedWorkouts: [],
         createdWorkouts: [],
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(),
       });
     } catch (err: any) {
       if (err.code === "auth/email-already-in-use") {
         setError("Tento e-mail už je obsazený.");
+      } else if (err.code === "auth/weak-password") {
+        setError("Heslo musí mít alespoň 6 znaků.");
       } else {
         setError("Chyba při registraci: " + err.message);
       }
@@ -85,11 +91,25 @@ function SignupPage() {
           <div className="space-y-4">
             <FormField label="Username">
               <input
+                type="text"
+                placeholder="USERNAME"
+                className="w-full bg-zinc-900 border-none p-4 text-white font-bold placeholder:text-zinc-700 focus:ring-2 focus:ring-heavy-teal outline-none transition-all"
+                value={userData.username}
+                onChange={(e) =>
+                  setUserData({ ...userData, username: e.target.value })
+                }
+              />
+            </FormField>
+
+            <FormField label="Email">
+              <input
                 type="email"
                 placeholder="EMAIL_ADDRESS"
                 className="w-full bg-zinc-900 border-none p-4 text-white font-bold placeholder:text-zinc-700 focus:ring-2 focus:ring-heavy-teal outline-none transition-all"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={userData.email}
+                onChange={(e) =>
+                  setUserData({ ...userData, email: e.target.value })
+                }
               />
             </FormField>
 

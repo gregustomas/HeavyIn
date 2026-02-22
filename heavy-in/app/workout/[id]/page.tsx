@@ -12,10 +12,10 @@ async function WorkoutDetailPage({ params }: PageProps) {
   const { id } = await params;
 
   const workoutRef = doc(db, "workouts", id); // reference na kolekci
-  const workouSnap = await getDoc(workoutRef); // získání dat
+  const workoutSnap = await getDoc(workoutRef); // získání dat
 
   // kontrola jestli data existují
-  if (!workouSnap.exists()) {
+  if (!workoutSnap.exists()) {
     return (
       <main className="p-4 text-heavy-main bg-heavy-bg">
         Workout nebyl nalezen.
@@ -23,11 +23,13 @@ async function WorkoutDetailPage({ params }: PageProps) {
     );
   }
 
-  const workout = workouSnap.data() as any;
-  const user = USERS.find((u) => u.id === workout?.userId) || {
-    username: "User",
-    avatarUrl: "/cbum.avif",
-  };
+  const workout = workoutSnap.data() as any;
+
+  const userRef = doc(db, "users", workout.userId);
+  const userSnap = await getDoc(userRef);
+  const user = userSnap.exists()
+    ? userSnap.data()
+    : { username: "User", avatarUrl: "/user.png" };
 
   return (
     <main className="min-h-screen bg-heavy-bg text-heavy-main pb-20 relative">
@@ -35,7 +37,6 @@ async function WorkoutDetailPage({ params }: PageProps) {
         <BackBtn link="/" />
       </div>
 
-      {/* Hero Header s obrázkem */}
       <div className="relative w-full h-112.5">
         <Image
           src={workout.image || "/cbum.avif"}
@@ -44,10 +45,8 @@ async function WorkoutDetailPage({ params }: PageProps) {
           priority
           className="object-cover"
         />
-        {/* Gradient pro čitelnost postavený na tvém pozadí */}
         <div className="absolute inset-0 bg-linear-to-t from-heavy-bg via-transparent to-black/20" />
 
-        {/* Title Over Image */}
         <div className="absolute bottom-0 left-0 p-8 w-full">
           <div className="flex gap-2 mb-3">
             <span className="bg-heavy-teal text-heavy-bg text-[10px] font-black px-2 py-1 rounded uppercase tracking-tighter">
@@ -60,14 +59,12 @@ async function WorkoutDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Obsah pod obrázkem */}
       <div className="px-6 py-8 space-y-10">
-        {/* Profil autora */}
         <div className="flex items-center justify-between gap-3 p-4 bg-heavy-card rounded-2xl border border-heavy-border shadow-inner">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-heavy-teal/30">
               <Image
-                src={user.avatarUrl || "/cbum.avif"}
+                src={user.avatarUrl || "/user.png"}
                 alt={user.username}
                 fill
                 className="object-cover"
@@ -86,12 +83,10 @@ async function WorkoutDetailPage({ params }: PageProps) {
           </button>
         </div>
 
-        {/* Popis */}
         <p className="text-heavy-muted text-lg leading-snug italic font-medium border-l-4 border-heavy-teal pl-5">
           "{workout.description}"
         </p>
 
-        {/* Seznam cviků */}
         <section className="space-y-4">
           <div className="flex justify-between items-end border-b border-heavy-border pb-2">
             <h2 className="text-xs font-black uppercase tracking-[0.3em] text-heavy-muted">
