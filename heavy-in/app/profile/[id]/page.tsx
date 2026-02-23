@@ -24,6 +24,7 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
     bio: rawData?.bio || "No excuses, just heavy lifting.",
     followers: rawData?.followers || [],
     following: rawData?.following || [],
+    createdWorkouts: rawData?.createdWorkoutsc || [],
   };
 
   if (!userSnap.exists()) return <div>Uživatel nenalezen</div>;
@@ -42,6 +43,8 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
       createdAt: data.createdAt?.toMillis() || Date.now(),
     };
   });
+
+  const posts = workoutsSnap.size;
 
   return (
     <main>
@@ -68,18 +71,20 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
 
         <div className="flex justify-around text-center mt-8 border-b-2 border-heavy-border pb-4">
           <div className="grid items-center justify-center">
-            <span className="text-3xl font-black">0</span>
+            <span className="text-3xl font-black">
+              {posts}
+            </span>
             <p className="text-heavy-muted">posts</p>
           </div>
 
           <div className="grid items-center justify-center">
-            <span className="text-3xl font-black">0</span>
+            <span className="text-3xl font-black">{user.followers.length}</span>
             <p className="text-heavy-muted">followers</p>
           </div>
 
           <div className="grid items-center justify-center">
-            <span className="text-3xl font-black">0</span>
-            <p className="text-heavy-muted">followink</p>
+            <span className="text-3xl font-black">{user.following.length}</span>
+            <p className="text-heavy-muted">following</p>
           </div>
         </div>
       </header>
@@ -87,16 +92,18 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
       <div className="px-4 py-8">
         <div className="flex gap-6">
           <span className="flex gap-2 border-b-2 pb-2 border-heavy-teal">
-            <Dumbbell/> My workouts
+            <Dumbbell /> My workouts
           </span>
 
           <span className="flex gap-2">
-            <Bookmark/> Saved
+            <Bookmark /> Saved
           </span>
         </div>
 
         <div>
-          {userWorkouts.map((w) => {return <WorkoutCard key={w.id} data={w} />})}
+          {userWorkouts.map((w) => {
+            return <WorkoutCard key={w.id} data={w} />;
+          })}
         </div>
       </div>
     </main>

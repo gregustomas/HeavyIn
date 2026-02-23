@@ -53,7 +53,8 @@ function SignupPage() {
         avatarUrl: "/user.png",
         likedWorkouts: [],
         savedWorkouts: [],
-        createdWorkouts: [],
+        followers: [],
+        following: [],
         createdAt: serverTimestamp(),
       });
     } catch (err: any) {
