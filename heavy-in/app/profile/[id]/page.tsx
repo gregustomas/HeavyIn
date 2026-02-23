@@ -91,13 +91,13 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
 
       <div className="px-4 py-8">
         <div className="flex gap-6">
-          <span className="flex gap-2 border-b-2 pb-2 border-heavy-teal">
+          <button className="flex gap-2 border-b-2 pb-2 border-heavy-teal">
             <Dumbbell /> My workouts
-          </span>
+          </button>
 
-          <span className="flex gap-2">
+          <button className="flex gap-2">
             <Bookmark /> Saved
-          </span>
+          </button>
         </div>
 
         <div>
