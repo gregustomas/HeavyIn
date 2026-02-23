@@ -78,6 +78,7 @@ function CreateWorkoutPage() {
         exercises: exerciseList,
         likes: [],
         likeCount: 0,
+        savedWorkouts: [],
         createdAt: serverTimestamp(),
       });
 

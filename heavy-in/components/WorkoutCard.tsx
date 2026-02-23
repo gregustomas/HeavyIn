@@ -82,6 +82,7 @@ function WorkoutCard({ data }: { data: any }) {
 
     const workoutRef = doc(db, "workouts", id);
     const wasSaved = isSaved;
+    const userRef = doc(db, "users", currentUser.uid);
 
     setIsSaved(!wasSaved);
 
@@ -90,6 +91,10 @@ function WorkoutCard({ data }: { data: any }) {
         savedBy: wasSaved
           ? arrayRemove(currentUser.uid)
           : arrayUnion(currentUser.uid),
+      });
+
+      await updateDoc(userRef, {
+        savedWorkouts: wasSaved ? arrayRemove(id) : arrayUnion(id),
       });
     } catch (err) {
       console.error("Chyba při ukládání:", err);
