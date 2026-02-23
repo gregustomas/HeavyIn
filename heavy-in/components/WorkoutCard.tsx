@@ -138,8 +138,10 @@ function WorkoutCard({ data }: { data: any }) {
           <span className="font-bold text-sm leading-none text-heavy-main">
             {author?.username || "User"}
           </span>
-          <span className="text-[10px] text-heavy-muted block uppercase tracking-widest">
-            {data.createdAt?.toDate().toLocaleDateString()}
+          <span>
+            {data.createdAt
+              ? new Date(data.createdAt).toLocaleDateString()
+              : "Neznámé datum"}
           </span>
         </div>
         <button className="px-5 py-1.5 bg-heavy-teal hover:bg-heavy-teal/90 text-white text-xs font-black uppercase tracking-tight rounded-lg transition-all active:scale-95 shadow-sm shrink-0">
