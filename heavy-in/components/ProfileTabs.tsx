@@ -14,7 +14,6 @@ function ProfileTabs({ myWorkouts, savedWorkouts }: ProfileTabsProps) {
 
   return (
     <div className="px-4 py-8">
-      {/* TABS HEADER */}
       <div className="flex gap-6 mb-6">
         <button
           onClick={() => setActiveTab("my")}
@@ -39,7 +38,6 @@ function ProfileTabs({ myWorkouts, savedWorkouts }: ProfileTabsProps) {
         </button>
       </div>
 
-      {/* CONTENT */}
       <div className="grid gap-2">
         {activeTab === "my" ? (
           myWorkouts.length > 0 ? (

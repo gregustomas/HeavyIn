@@ -1,4 +1,5 @@
 import { db } from "@/app/firebase";
+import ProfileTabs from "@/components/ProfileTabs";
 import WorkoutCard from "@/components/WorkoutCard";
 import {
   collection,
@@ -24,7 +25,8 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
     bio: rawData?.bio || "No excuses, just heavy lifting.",
     followers: rawData?.followers || [],
     following: rawData?.following || [],
-    createdWorkouts: rawData?.createdWorkoutsc || [],
+    createdWorkouts: rawData?.createdWorkouts || [],
+    savedWorkouts: rawData?.savedWorkouts || [],
   };
 
   if (!userSnap.exists()) return <div>Uživatel nenalezen</div>;
@@ -43,6 +45,21 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
       createdAt: data.createdAt?.toMillis() || Date.now(),
     };
   });
+
+  let savedWorkoutsData: any[] = [];
+  if (user.savedWorkouts.length > 0) {
+    const savedQuery = query(
+      collection(db, "workouts"),
+      where("__name__", "in", user.savedWorkouts.slice(0, 30)),
+    );
+    const savedSnap = await getDocs(savedQuery);
+
+    savedWorkoutsData = savedSnap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toMillis() || Date.now(),
+    }));
+  }
 
   const posts = workoutsSnap.size;
 
@@ -71,9 +88,7 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
 
         <div className="flex justify-around text-center mt-8 border-b-2 border-heavy-border pb-4">
           <div className="grid items-center justify-center">
-            <span className="text-3xl font-black">
-              {posts}
-            </span>
+            <span className="text-3xl font-black">{posts}</span>
             <p className="text-heavy-muted">posts</p>
           </div>
 
@@ -89,23 +104,10 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
         </div>
       </header>
 
-      <div className="px-4 py-8">
-        <div className="flex gap-6">
-          <button className="flex gap-2 border-b-2 pb-2 border-heavy-teal">
-            <Dumbbell /> My workouts
-          </button>
-
-          <button className="flex gap-2">
-            <Bookmark /> Saved
-          </button>
-        </div>
-
-        <div>
-          {userWorkouts.map((w) => {
-            return <WorkoutCard key={w.id} data={w} />;
-          })}
-        </div>
-      </div>
+      <ProfileTabs
+        myWorkouts={userWorkouts}
+        savedWorkouts={savedWorkoutsData}
+      />
     </main>
   );
 }
