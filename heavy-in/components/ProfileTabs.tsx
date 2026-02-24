@@ -9,8 +9,22 @@ interface ProfileTabsProps {
   savedWorkouts: any[];
 }
 
-function ProfileTabs({ myWorkouts, savedWorkouts }: ProfileTabsProps) {
+function ProfileTabs({
+  myWorkouts: initialMy,
+  savedWorkouts: initialSaved,
+}: any) {
   const [activeTab, setActiveTab] = useState<"my" | "saved">("my");
+
+  const [myWorkouts, setMyWorkouts] = useState(initialMy);
+  const [savedWorkouts, setSavedWorkouts] = useState(initialSaved);
+
+  const updateWorkoutInState = (workoutId: string, newLikes: string[]) => {
+    const updateFn = (list: any[]) =>
+      list.map((w) => (w.id === workoutId ? { ...w, likes: newLikes } : w));
+
+    setMyWorkouts(updateFn);
+    setSavedWorkouts(updateFn);
+  };
 
   return (
     <div className="px-4 py-8">
@@ -41,14 +55,26 @@ function ProfileTabs({ myWorkouts, savedWorkouts }: ProfileTabsProps) {
       <div className="grid gap-2">
         {activeTab === "my" ? (
           myWorkouts.length > 0 ? (
-            myWorkouts.map((w) => <WorkoutCard key={w.id} data={w} />)
+            myWorkouts.map((w: any) => (
+              <WorkoutCard
+                key={w.id}
+                data={w}
+                onLikeUpdate={updateWorkoutInState}
+              />
+            ))
           ) : (
             <p className="text-center text-heavy-muted py-10">
               Zatím jsi nevytvořil žádný trénink.
             </p>
           )
         ) : savedWorkouts.length > 0 ? (
-          savedWorkouts.map((w) => <WorkoutCard key={w.id} data={w} />)
+          savedWorkouts.map((w: any) => (
+            <WorkoutCard
+              key={w.id}
+              data={w}
+              onLikeUpdate={updateWorkoutInState}
+            />
+          ))
         ) : (
           <p className="text-center text-heavy-muted py-10">
             Nemáš uložené žádné tréninky.

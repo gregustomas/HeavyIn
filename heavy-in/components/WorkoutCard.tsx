@@ -10,6 +10,7 @@ import {
   arrayUnion,
   doc,
   getDoc,
+  increment,
   updateDoc,
 } from "firebase/firestore";
 import { auth, db } from "@/app/firebase";
@@ -30,7 +31,13 @@ interface WorkoutData {
   createdAt?: any;
 }
 
-function WorkoutCard({ data }: { data: any }) {
+function WorkoutCard({
+  data,
+  onLikeUpdate,
+}: {
+  data: any;
+  onLikeUpdate?: any;
+}) {
   const {
     id,
     userId,
@@ -51,6 +58,12 @@ function WorkoutCard({ data }: { data: any }) {
   const [author, setAuthor] = useState<any>(null);
   const [isLiked, setIsLiked] = useState(likes.includes(currentUser?.uid));
   const [isSaved, setIsSaved] = useState(savedBy.includes(currentUser?.uid));
+  const [displayLikeCount, setDisplayLikeCount] = useState(likes.length);
+
+  useEffect(() => {
+    setIsLiked(likes.includes(currentUser?.uid));
+    setDisplayLikeCount(likes.length);
+  }, [likes, currentUser]);
 
   useEffect(() => {
     if (!userId) {
@@ -112,14 +125,23 @@ function WorkoutCard({ data }: { data: any }) {
     const workoutRef = doc(db, "workouts", id);
     const wasLiked = isLiked;
 
+    const newLikes = wasLiked
+      ? likes.filter((uid: string) => uid !== currentUser.uid)
+      : [...likes, currentUser.uid];
+
     setIsLiked(!wasLiked);
+    setDisplayLikeCount((prev: number) => (wasLiked ? prev - 1 : prev + 1));
+
+    if (onLikeUpdate) {
+      onLikeUpdate(id, newLikes);
+    }
 
     try {
       await updateDoc(workoutRef, {
         likes: wasLiked
           ? arrayRemove(currentUser?.uid)
           : arrayUnion(currentUser?.uid),
-        likeCount: wasLiked ? likeCount - 1 : likeCount + 1,
+        likeCount: wasLiked ? increment(-1) : increment(1),
       });
     } catch (err) {
       console.error("Lajk se nepovedl:", err);
@@ -178,7 +200,7 @@ function WorkoutCard({ data }: { data: any }) {
               <span
                 className={`text-xs font-black tracking-tighter transition-colors ${isLiked ? "text-red-500" : "text-heavy-muted"}`}
               >
-                {likes.length}
+                {displayLikeCount}
               </span>
             </div>
 
