@@ -76,9 +76,6 @@ function CreateWorkoutPage() {
         split: workoutData.split,
         image: workoutData.image,
         exercises: exerciseList,
-        likes: [],
-        likeCount: 0,
-        savedWorkouts: [],
         createdAt: serverTimestamp(),
       });
 

@@ -1,19 +1,11 @@
 "use client";
 
-import { Bookmark, Flame, Heart, MessageCircle, Send, Zap } from "lucide-react";
+import { Flame, Share2, Zap } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/app/context/AuthContext";
-import {
-  arrayRemove,
-  arrayUnion,
-  doc,
-  getDoc,
-  increment,
-  updateDoc,
-} from "firebase/firestore";
-import { auth, db } from "@/app/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/app/firebase";
 
 interface WorkoutData {
   id: string;
@@ -24,46 +16,14 @@ interface WorkoutData {
   image: string;
   split: string;
   exercises: any[];
-  likes: string[];
-  likeCount?: number;
-  commentCount?: number;
-  shareCount?: number;
   createdAt?: any;
 }
 
-function WorkoutCard({
-  data,
-  onLikeUpdate,
-}: {
-  data: any;
-  onLikeUpdate?: any;
-}) {
-  const {
-    id,
-    userId,
-    title,
-    description,
-    image,
-    split,
-    exercises = [],
-    likes = [],
-    likeCount = 0,
-    savedBy = [],
-    commentCount = 0,
-    shareCount = 0,
-  } = data;
+function WorkoutCard({ data }: { data: WorkoutData }) {
+  const { id, userId, title, description, image, split, exercises = [] } = data;
 
   const exercisesCount = exercises.length;
-  const { user: currentUser } = useAuth();
   const [author, setAuthor] = useState<any>(null);
-  const [isLiked, setIsLiked] = useState(likes.includes(currentUser?.uid));
-  const [isSaved, setIsSaved] = useState(savedBy.includes(currentUser?.uid));
-  const [displayLikeCount, setDisplayLikeCount] = useState(likes.length);
-
-  useEffect(() => {
-    setIsLiked(likes.includes(currentUser?.uid));
-    setDisplayLikeCount(likes.length);
-  }, [likes, currentUser]);
 
   useEffect(() => {
     if (!userId) {
@@ -86,68 +46,11 @@ function WorkoutCard({
     fetchAuthor();
   }, [userId]);
 
-  useEffect(() => {
-    setIsSaved(savedBy.includes(currentUser?.uid));
-  }, [savedBy, currentUser]);
-
-  const handleSave = async () => {
-    if (!currentUser) return alert("Musíš se přihlásit!");
-
-    const workoutRef = doc(db, "workouts", id);
-    const wasSaved = isSaved;
-    const userRef = doc(db, "users", currentUser.uid);
-
-    setIsSaved(!wasSaved);
-
-    try {
-      await updateDoc(workoutRef, {
-        savedBy: wasSaved
-          ? arrayRemove(currentUser.uid)
-          : arrayUnion(currentUser.uid),
-      });
-
-      await updateDoc(userRef, {
-        savedWorkouts: wasSaved ? arrayRemove(id) : arrayUnion(id),
-      });
-    } catch (err) {
-      console.error("Chyba při ukládání:", err);
-      setIsSaved(wasSaved);
-    }
-  };
-
-  useEffect(() => {
-    setIsLiked(likes.includes(currentUser?.uid));
-  }, [likes, currentUser]);
-
-  const handleLike = async () => {
-    if (!currentUser) return alert("Musíš se přihlásit!");
-
-    const workoutRef = doc(db, "workouts", id);
-    const wasLiked = isLiked;
-
-    const newLikes = wasLiked
-      ? likes.filter((uid: string) => uid !== currentUser.uid)
-      : [...likes, currentUser.uid];
-
-    setIsLiked(!wasLiked);
-    setDisplayLikeCount((prev: number) => (wasLiked ? prev - 1 : prev + 1));
-
-    if (onLikeUpdate) {
-      onLikeUpdate(id, newLikes);
-    }
-
-    try {
-      await updateDoc(workoutRef, {
-        likes: wasLiked
-          ? arrayRemove(currentUser?.uid)
-          : arrayUnion(currentUser?.uid),
-        likeCount: wasLiked ? increment(-1) : increment(1),
-      });
-    } catch (err) {
-      console.error("Lajk se nepovedl:", err);
-      setIsLiked(wasLiked);
-    }
-  };
+  const formatedDate = data.createdAt?.toDate
+    ? data.createdAt.toDate().toLocaleDateString()
+    : data.createdAt instanceof Date
+      ? data.createdAt.toLocaleDateString("cs-CZ")
+      : "Neznámé datum";
 
   return (
     <div className="bg-heavy-card rounded my-6">
@@ -165,14 +68,18 @@ function WorkoutCard({
           <span className="font-bold text-sm leading-none text-heavy-main">
             {author?.username || "User"}
           </span>
-          <span>
-            {data.createdAt
-              ? new Date(data.createdAt).toLocaleDateString()
-              : "Neznámé datum"}
-          </span>
+          <span>{formatedDate}</span>
         </div>
-        <button className="px-5 py-1.5 bg-heavy-teal hover:bg-heavy-teal/90 text-white text-xs font-black uppercase tracking-tight rounded-lg transition-all active:scale-95 shadow-sm shrink-0">
-          Follow
+        <button
+          onClick={() =>
+            navigator.share?.({
+              title,
+              url: window.location.origin + "/workout/" + id,
+            })
+          }
+          className="p-2 hover:bg-heavy-surface rounded-full transition-colors text-heavy-teal"
+        >
+          <Share2 size={18} />
         </button>
       </div>
 
@@ -183,61 +90,6 @@ function WorkoutCard({
       </Link>
 
       <div className="p-4 grid gap-6">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-5">
-            {/* LIKE */}
-            <div className="flex gap-1.5 items-center">
-              <button
-                onClick={() => handleLike()}
-                className={`group transition-all active:scale-125 ${isLiked ? "text-red-500" : "text-heavy-main hover:text-red-500"}`}
-              >
-                <Heart
-                  size={22}
-                  className={`transition-transform duration-200 ${isLiked ? "scale-110" : "group-hover:scale-110"}`}
-                  fill={isLiked ? "currentColor" : "none"}
-                />
-              </button>
-              <span
-                className={`text-xs font-black tracking-tighter transition-colors ${isLiked ? "text-red-500" : "text-heavy-muted"}`}
-              >
-                {displayLikeCount}
-              </span>
-            </div>
-
-            {/* COMMENTS */}
-            <div className="flex gap-1.5 items-center">
-              <button className="text-heavy-main hover:text-heavy-teal transition-all active:scale-125 hover:scale-110">
-                <MessageCircle size={22} />
-              </button>
-              <span className="text-xs font-black tracking-tighter text-heavy-muted">
-                {commentCount || 0}
-              </span>
-            </div>
-
-            {/* SHARE */}
-            <div className="flex gap-1.5 items-center">
-              <button className="text-heavy-main hover:text-heavy-teal transition-all active:rotate-12 active:scale-125 hover:scale-110">
-                <Send size={22} />
-              </button>
-              <span className="text-xs font-black tracking-tighter text-heavy-muted">
-                {shareCount || 0}
-              </span>
-            </div>
-          </div>
-
-          {/* BOOKMARK (SAVED) */}
-          <button
-            onClick={() => handleSave()}
-            className={`transition-all active:scale-150 ${isSaved ? "text-yellow-300" : "text-heavy-main hover:text-yellow-300"}`}
-          >
-            <Bookmark
-              size={22}
-              className={`${isSaved ? "animate-[bounce_0.4s_ease-in-out]" : "hover:scale-110"}`}
-              fill={isSaved ? "currentColor" : "none"}
-            />
-          </button>
-        </div>
-
         <div className="space-y-2">
           {/* Nadpis */}
           <h3 className="font-black text-2xl uppercase italic tracking-tighter text-heavy-main leading-none">

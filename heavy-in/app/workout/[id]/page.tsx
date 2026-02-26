@@ -1,16 +1,31 @@
 import { db } from "@/app/firebase";
-import { USERS } from "@/app/lib/data";
 import BackBtn from "@/components/BackBtn";
 import { doc, getDoc } from "firebase/firestore";
+import { Metadata } from "next";
 import Image from "next/image";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const snap = await getDoc(doc(db, "workouts", id));
+  const data = snap.data();
+
+  return {
+    title: `${data?.title || "Workout"} | HeavyIn`,
+    description: data?.description || "Check out this training plan on HeavyIn",
+    openGraph: {
+      images: [data?.image || "/cbum.avif"],
+    },
+  };
+}
+
 async function WorkoutDetailPage({ params }: PageProps) {
   const { id } = await params;
-
   const workoutRef = doc(db, "workouts", id); // reference na kolekci
   const workoutSnap = await getDoc(workoutRef); // získání dat
 
@@ -77,10 +92,6 @@ async function WorkoutDetailPage({ params }: PageProps) {
               <p className="font-bold text-lg leading-none">{user.username}</p>
             </div>
           </div>
-
-          <button className="px-5 py-1.5 bg-heavy-teal hover:bg-heavy-teal/90 text-white text-xs font-black uppercase tracking-tight rounded-lg transition-all active:scale-95 shadow-sm shrink-0">
-            Follow
-          </button>
         </div>
 
         <p className="text-heavy-muted text-lg leading-snug italic font-medium border-l-4 border-heavy-teal pl-5">

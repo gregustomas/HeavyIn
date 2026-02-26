@@ -1,14 +1,12 @@
 "use client";
 
 import WorkoutCard from "@/components/WorkoutCard";
-import { DUMMY_WORKOUTS, USERS } from "./lib/data";
 import { useEffect, useState } from "react";
 import {
   collection,
   onSnapshot,
   orderBy,
   query,
-  QuerySnapshot,
 } from "firebase/firestore";
 import { db } from "./firebase";
 

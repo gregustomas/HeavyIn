@@ -1,6 +1,4 @@
 import { db } from "@/app/firebase";
-import ProfileTabs from "@/components/ProfileTabs";
-import WorkoutCard from "@/components/WorkoutCard";
 import {
   collection,
   doc,
@@ -9,7 +7,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Bookmark, Dumbbell, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import Image from "next/image";
 
 async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -23,10 +21,7 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
     username: rawData?.username || "User",
     avatarUrl: rawData?.avatarUrl || "/user.png",
     bio: rawData?.bio || "No excuses, just heavy lifting.",
-    followers: rawData?.followers || [],
-    following: rawData?.following || [],
     createdWorkouts: rawData?.createdWorkouts || [],
-    savedWorkouts: rawData?.savedWorkouts || [],
   };
 
   if (!userSnap.exists()) return <div>Uživatel nenalezen</div>;
@@ -45,21 +40,6 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
       createdAt: data.createdAt?.toMillis() || Date.now(),
     };
   });
-
-  let savedWorkoutsData: any[] = [];
-  if (user.savedWorkouts.length > 0) {
-    const savedQuery = query(
-      collection(db, "workouts"),
-      where("__name__", "in", user.savedWorkouts.slice(0, 30)),
-    );
-    const savedSnap = await getDocs(savedQuery);
-
-    savedWorkoutsData = savedSnap.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toMillis() || Date.now(),
-    }));
-  }
 
   const posts = workoutsSnap.size;
 
@@ -91,23 +71,8 @@ async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
             <span className="text-3xl font-black">{posts}</span>
             <p className="text-heavy-muted">posts</p>
           </div>
-
-          <div className="grid items-center justify-center">
-            <span className="text-3xl font-black">{user.followers.length}</span>
-            <p className="text-heavy-muted">followers</p>
-          </div>
-
-          <div className="grid items-center justify-center">
-            <span className="text-3xl font-black">{user.following.length}</span>
-            <p className="text-heavy-muted">following</p>
-          </div>
         </div>
       </header>
-
-      <ProfileTabs
-        myWorkouts={userWorkouts}
-        savedWorkouts={savedWorkoutsData}
-      />
     </main>
   );
 }
