@@ -1,6 +1,5 @@
 import { db } from "@/app/firebase";
 import ProfileTabs from "@/components/ProfileTabs";
-import WorkoutCard from "@/components/WorkoutCard";
 import {
   collection,
   doc,
@@ -9,7 +8,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Bookmark, Dumbbell, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import Image from "next/image";
 
 async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
