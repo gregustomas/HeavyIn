@@ -1,7 +1,7 @@
 "use client";
 
 import { Upload, X } from "lucide-react";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 interface ImageUploadProps {
   image: string | null;
@@ -30,15 +30,19 @@ export default function ImageUpload({ image, setImage }: ImageUploadProps) {
 
   return (
     <div className="grid gap-2">
-      <div 
+      <div
         onClick={() => !image && fileInputRef.current?.click()}
-        className={`relative flex flex-col items-center justify-center h-56 border-2 border-dashed border-heavy-border rounded-3xl bg-heavy-card transition-all overflow-hidden group ${!image ? 'cursor-pointer hover:border-heavy-teal/50' : ''}`}
+        className={`relative flex flex-col items-center justify-center h-30 border-2 border-dashed border-heavy-border rounded-3xl bg-heavy-card transition-all overflow-hidden group ${!image ? "cursor-pointer hover:border-heavy-teal/50" : ""}`}
       >
         {image ? (
           <>
-            <img src={image} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+            <img
+              src={image}
+              alt="Preview"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
             <div className="absolute inset-0 flex items-start justify-end p-4">
-              <button 
+              <button
                 onClick={removeImage}
                 className="bg-heavy-coral p-3 rounded-full text-white shadow-xl hover:scale-110 transition-transform"
               >
@@ -56,12 +60,12 @@ export default function ImageUpload({ image, setImage }: ImageUploadProps) {
             </span>
           </>
         )}
-        <input 
-          type="file" 
+        <input
+          type="file"
           ref={fileInputRef}
-          accept="image/*" 
-          className="hidden" 
-          onChange={handleImageChange} 
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageChange}
         />
       </div>
     </div>

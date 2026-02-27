@@ -28,7 +28,7 @@ function CreateWorkoutPage() {
   const [exerciseList, setExerciseList] = useState([
     { id: crypto.randomUUID(), name: "", sets: "", reps: "", note: "" },
   ]);
-
+  const [isPublishing, setIsPublishing] = useState(false);
   const handleInputChange = (field: string, value: string | null) => {
     setWorkoutData((prev) => ({
       ...prev,
@@ -86,20 +86,30 @@ function CreateWorkoutPage() {
   };
 
   return (
-    <main className="grid gap-8">
-      <div className="flex gap-2 items-center text-2xl font-black uppercase italic tracking-tighter leading-[0.85]">
-        <BackBtn link="/" />
-        Create <span className="text-heavy-teal">workout</span>
+    <main className="min-h-screen pb-4">
+      <div className="sticky mb-4 top-0 z-50 bg-white/90 backdrop-blur-sm p-4 flex items-center justify-between border-b border-heavy-border/50">
+        <div className="flex flex-col tracking-tighter">
+          <span className="text-xl font-black uppercase">Create</span>
+          <span className="text-xl font-black uppercase text-heavy-teal">
+            Workout
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <BackBtn link="/" />
+
+          <button
+            form="workout-form"
+            type="submit"
+            disabled={isPublishing}
+            className="bg-heavy-teal text-white h-10 px-6 rounded-xl font-black uppercase italic tracking-tighter text-sm shadow-md active:scale-95 transition-all"
+          >
+            {isPublishing ? "..." : "Publish"}
+          </button>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid gap-6">
-        <FormField label="Cover image">
-          <ImageUpload
-            image={workoutData.image}
-            setImage={(img) => handleInputChange("image", img)}
-          />
-        </FormField>
-
+      <form onSubmit={handleSubmit} id="workout-form" className="grid gap-6 p-4">
         <FormField label="Title *">
           <input
             required
@@ -127,15 +137,16 @@ function CreateWorkoutPage() {
           onSelect={(option) => handleInputChange("split", option)}
         />
 
-        <hr className="text-heavy-coral" />
+        <FormField label="Cover image">
+          <ImageUpload
+            image={workoutData.image}
+            setImage={(img) => handleInputChange("image", img)}
+          />
+        </FormField>
 
         <div className="grid gap-6">
           <div className="flex items-center justify-between py-3">
-            <h3 className="label-heavy text-2xl text-white">Exercises</h3>
-
-            <Button variant="add" icon={Plus} onClick={addExercise}>
-              Add exercise
-            </Button>
+            <h3 className="label-heavy text-2xl text-heavy-main">Exercises</h3>
           </div>
 
           {exerciseList.map((item, index) => (
@@ -150,7 +161,14 @@ function CreateWorkoutPage() {
           ))}
         </div>
 
-        <Button type="submit">Publish Workout</Button>
+        <Button
+          type="button"
+          variant="addExercise"
+          icon={Plus}
+          onClick={addExercise}
+        >
+          Add exercise
+        </Button>
       </form>
     </main>
   );

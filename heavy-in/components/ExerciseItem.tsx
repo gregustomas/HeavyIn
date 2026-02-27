@@ -1,6 +1,9 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { FormField } from "./FormField";
+import { useState } from "react";
+import Button from "./Button";
 
 export interface ExerciseData {
   id: string;
@@ -28,6 +31,8 @@ export default function ExerciseItem({
   const handleChange = (field: keyof ExerciseData, value: string) => {
     onUpdate(index, { ...data, [field]: value });
   };
+
+  const [showNote, setShowNote] = useState(!!data.note);
 
   return (
     <div className="w-full border-heavy-border border-2 rounded-2xl p-5 bg-heavy-card relative group transition-all hover:border-heavy-teal/30">
@@ -58,20 +63,19 @@ export default function ExerciseItem({
 
       {/* Inputy */}
       <div className="grid gap-5">
-        <div>
-          <label className="label-heavy">Name</label>
+        <FormField label="name">
           <input
             type="text"
             className="input-heavy p-3"
             placeholder="e.g. Bench Press"
+            required
             value={data.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />
-        </div>
+        </FormField>
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="label-heavy">Sets</label>
+          <FormField label="sets">
             <input
               type="number"
               placeholder="0"
@@ -79,10 +83,9 @@ export default function ExerciseItem({
               value={data.sets}
               onChange={(e) => handleChange("sets", e.target.value)}
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="label-heavy">Reps</label>
+          <FormField label="reps">
             <input
               type="text"
               placeholder="6-8"
@@ -90,18 +93,28 @@ export default function ExerciseItem({
               value={data.reps}
               onChange={(e) => handleChange("reps", e.target.value)}
             />
-          </div>
+          </FormField>
         </div>
 
-        <div>
-          <label className="label-heavy">Note</label>
-          <textarea
-            className="textarea-heavy p-3 min-h-20"
-            placeholder="Focus on eccentric phase..."
-            value={data.note}
-            onChange={(e) => handleChange("note", e.target.value)}
-          />
-        </div>
+        {!showNote ? (
+          <Button
+            type="button"
+            variant="clear"
+            onClick={() => setShowNote(true)}
+          >
+            <Plus />
+            Add note
+          </Button>
+        ) : (
+          <FormField label="note">
+            <textarea
+              className="textarea-heavy p-3 min-h-20"
+              placeholder="Focus on eccentric phase..."
+              value={data.note}
+              onChange={(e) => handleChange("note", e.target.value)}
+            />
+          </FormField>
+        )}
       </div>
     </div>
   );

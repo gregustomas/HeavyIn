@@ -13,7 +13,7 @@
   --accent-secondary: #ff6b9d;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) { 
   :root {
     /* Dark Mode Barvy */
     --background: #0a0a0a;
