@@ -53,7 +53,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
       : "Neznámé datum";
 
   return (
-    <div className="bg-heavy-card rounded my-6">
+    <div className="bg-heavy-card rounded my-6 shadow-sm">
       <div className="flex items-center justify-between p-3 pt-4">
         {/* user */}
         <div className="flex gap-2 items-center w-full">
@@ -83,18 +83,22 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
         </button>
       </div>
 
-      <Link href={`/workout/` + id}>
-        <div className="w-full h-80 my-2 bg-heavy-surface relative">
-          <Image src={image} alt={title} fill className="object-cover" />
-        </div>
-      </Link>
+      {image ? (
+        <Link href={`/workout/` + id}>
+          <div className="w-full h-80 my-2 bg-heavy-surface relative">
+            <Image src={image} alt={title} fill className="object-cover" />
+          </div>
+        </Link>
+      ) : null}
 
       <div className="p-4 grid gap-6">
         <div className="space-y-2">
           {/* Nadpis */}
-          <h3 className="font-black text-2xl uppercase italic tracking-tighter text-heavy-main leading-none">
-            {title}
-          </h3>
+          <Link href={`/workout/` + id}>
+            <h3 className="font-black text-2xl uppercase italic tracking-tighter text-heavy-main leading-none">
+              {title}
+            </h3>
+          </Link>
 
           {/* Popis */}
           <p className="text-sm text-heavy-muted leading-relaxed font-medium">
