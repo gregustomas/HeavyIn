@@ -68,7 +68,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
           <span className="font-bold text-sm leading-none text-heavy-main">
             {author?.username || "User"}
           </span>
-          <span>{formatedDate}</span>
+          <span className="text-sm leading-none text-heavy-muted">{formatedDate}</span>
         </div>
         <button
           onClick={() =>
@@ -92,28 +92,24 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
       ) : null}
 
       <div className="p-4 grid gap-6">
-        <div className="space-y-2">
-          {/* Nadpis */}
-          <Link href={`/workout/` + id}>
+        <Link href={`/workout/` + id}>
+          <div className="space-y-2">
             <h3 className="font-black text-2xl uppercase italic tracking-tighter text-heavy-main leading-none">
               {title}
             </h3>
-          </Link>
 
-          {/* Popis */}
-          <p className="text-sm text-heavy-muted leading-relaxed font-medium">
-            {description}
-          </p>
-        </div>
+            <p className="text-sm text-heavy-muted leading-relaxed font-medium">
+              {description}
+            </p>
+          </div>
+        </Link>
 
         <div className="flex flex-wrap gap-2">
-          {/* Exercises */}
           <span className="flex gap-1.5 items-center bg-heavy-surface/40 px-3 py-1.5 rounded-full border border-heavy-border text-heavy-muted text-[11px] font-black uppercase tracking-wider">
             <Flame size={14} className="text-red-500 fill-red-500/20" />
             {exercisesCount || 0} exercises
           </span>
 
-          {/* Category */}
           <span className="flex gap-1.5 items-center bg-heavy-surface/40 px-3 py-1.5 rounded-full border border-heavy-border text-heavy-muted text-[11px] font-black uppercase tracking-wider">
             <Zap size={14} className="text-amber-400 fill-amber-400/20" />
             {split || "custom"}
