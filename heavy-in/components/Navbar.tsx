@@ -1,4 +1,7 @@
-import { Bookmark, Home, Plus, Search, User } from "lucide-react";
+"use client";
+
+import { useAuth } from "@/app/context/AuthContext";
+import { Home, Plus, User } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -8,19 +11,29 @@ interface NavLinkProps {
   label: string;
 }
 
+interface CustomUser {
+  uid: string;
+  username?: string;
+}
+
 function Navbar() {
+  const { user, loading } = useAuth() as {
+    user: CustomUser | null;
+    loading: boolean;
+  };
+
+  if (loading) {
+    return <nav className="...">Načítání...</nav>;
+  }
+
+  const profileHref = user?.username ? `/profile/${user.username}` : "/login";
+
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-(--bg-secondary)/70 backdrop-blur-xl border-t border-heavy-border w-full flex items-center justify-center px-6 py-3 z-50">
-      <div className="flex items-center justify-around">
+      <div className="flex items-center justify-around gap-10">
         <NavLink href="/" icon={<Home size={24} />} label="Home" />
-        <NavLink href="/Explore" icon={<Search size={24} />} label="Explore" />
-        <NavLink href="/CreatePlan" icon={<Plus size={24} />} label="Create" />
-        <NavLink
-          href="/SavedPlans"
-          icon={<Bookmark size={24} />}
-          label="Saved"
-        />
-        <NavLink href="/Profile" icon={<User size={24} />} label="Profile" />
+        <NavLink href="/create" icon={<Plus size={24} />} label="Create" />
+        <NavLink href={profileHref} icon={<User size={24} />} label="Profile" />
       </div>
     </nav>
   );
