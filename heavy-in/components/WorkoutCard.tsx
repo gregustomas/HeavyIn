@@ -53,7 +53,7 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
       : "Neznámé datum";
 
   return (
-    <div className="bg-heavy-card rounded my-6 shadow-sm">
+    <div className="bg-heavy-card rounded shadow-sm">
       <div className="flex items-center justify-between p-3 pt-4">
         {/* user */}
         <div className="flex gap-2 items-center w-full">

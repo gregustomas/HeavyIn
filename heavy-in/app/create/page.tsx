@@ -117,7 +117,7 @@ function CreateWorkoutPage() {
             placeholder="My workout"
             className="input-heavy"
             value={workoutData.title}
-            onChange={(e) => handleInputChange("title", e.target.value)}
+            onChange={(e) => handleInputChange("title", e.target.value.toLowerCase())}
           />
         </FormField>
 
