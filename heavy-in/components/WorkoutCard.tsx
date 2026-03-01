@@ -68,7 +68,9 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
           <span className="font-bold text-sm leading-none text-heavy-main">
             {author?.username || "User"}
           </span>
-          <span className="text-sm leading-none text-heavy-muted">{formatedDate}</span>
+          <span className="text-sm leading-none text-heavy-muted">
+            {formatedDate}
+          </span>
         </div>
         <button
           onClick={() =>

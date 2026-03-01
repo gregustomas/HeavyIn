@@ -2,6 +2,7 @@ interface ExerciseData {
   name: string;
   note?: string;
   sets?: number | string;
+  reps?: number | string;
 }
 
 interface ExerciseCardProps {
@@ -27,16 +28,31 @@ const ExerciseCard = ({ index, data }: ExerciseCardProps) => {
           )}
         </div>
       </div>
-      {data.sets && (
-        <div className="flex flex-col items-end">
-          <span className="text-3xl font-black text-heavy-main leading-none">
-            {data.sets}
-          </span>
-          <span className="text-[10px] font-black uppercase tracking-widest text-heavy-teal mt-1">
-            Sets
-          </span>
-        </div>
-      )}
+      <div className="flex items-center">
+        {data.sets && (
+          <div
+            className={`flex flex-col items-end ${data.reps ? "pr-4 border-r border-heavy-border/50 mr-4" : ""}`}
+          >
+            <span className="text-2xl font-black text-heavy-main leading-none">
+              {data.sets}
+            </span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-heavy-teal mt-1">
+              Sets
+            </span>
+          </div>
+        )}
+
+        {data.reps && (
+          <div className="flex flex-col items-end min-w-8">
+            <span className="text-2xl font-black text-heavy-main leading-none">
+              {data.reps}
+            </span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-heavy-teal mt-1">
+              Reps
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
