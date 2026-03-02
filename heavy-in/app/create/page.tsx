@@ -10,7 +10,13 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 const SPLIT = ["Bro split", "Fullbody", "Upper/Lower", "Custom"];
@@ -68,9 +74,14 @@ function CreateWorkoutPage() {
     }
 
     try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const realUsername = userDoc.exists()
+        ? userDoc.data().username
+        : user.email?.split("@")[0];
+
       await addDoc(collection(db, "workouts"), {
         userId: user.uid,
-        authorName: user.displayName || user.email?.split("@")[0],
+        author: realUsername,
         title: workoutData.title,
         description: workoutData.description,
         split: workoutData.split,
@@ -109,7 +120,11 @@ function CreateWorkoutPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} id="workout-form" className="grid gap-6 p-4">
+      <form
+        onSubmit={handleSubmit}
+        id="workout-form"
+        className="grid gap-6 p-4"
+      >
         <FormField label="Title *">
           <input
             required
@@ -117,7 +132,9 @@ function CreateWorkoutPage() {
             placeholder="My workout"
             className="input-heavy"
             value={workoutData.title}
-            onChange={(e) => handleInputChange("title", e.target.value.toLowerCase())}
+            onChange={(e) =>
+              handleInputChange("title", e.target.value.toLowerCase())
+            }
           />
         </FormField>
 

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/app/firebase";
 
-interface WorkoutData {
+export interface WorkoutData {
   id: string;
   authorName?: string;
   userId: string;
@@ -46,11 +46,29 @@ function WorkoutCard({ data }: { data: WorkoutData }) {
     fetchAuthor();
   }, [userId]);
 
-  const formatedDate = data.createdAt?.toDate
-    ? data.createdAt.toDate().toLocaleDateString()
-    : data.createdAt instanceof Date
-      ? data.createdAt.toLocaleDateString("cs-CZ")
-      : "Neznámé datum";
+  const formatedDate = (() => {
+    if (!data.createdAt) return "Neznámé datum";
+
+    // 1. Pokud je to Firebase Timestamp (má metodu toDate)
+    if (typeof data.createdAt.toDate === "function") {
+      return data.createdAt.toDate().toLocaleDateString("cs-CZ");
+    }
+
+    // 2. Pokud je to JS Date objekt
+    if (data.createdAt instanceof Date) {
+      return data.createdAt.toLocaleDateString("cs-CZ");
+    }
+
+    // 3. Pokud je to ISO String (to, co posíláme ze Server Component)
+    if (typeof data.createdAt === "string") {
+      const date = new Date(data.createdAt);
+      return isNaN(date.getTime())
+        ? "Neznámé datum"
+        : date.toLocaleDateString("cs-CZ");
+    }
+
+    return "Neznámé datum";
+  })();
 
   return (
     <div className="bg-heavy-card rounded shadow-sm">

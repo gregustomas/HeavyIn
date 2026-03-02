@@ -1,5 +1,13 @@
 import { db } from "@/app/firebase";
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import WorkoutCard, { WorkoutData } from "@/components/WorkoutCard";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { Settings } from "lucide-react";
 import Image from "next/image";
 
@@ -41,8 +49,8 @@ export default async function ProfilePage({ params }: PageProps) {
     );
   }
 
-  const workoutsSnap = await getDocs(
-    query(collection(db, "workouts"), where("userAuthor", "==", user.username)),
+  const workoutsSnapshot = await getDocs(
+    query(collection(db, "workouts"), where("author", "==", user.username)),
   );
 
   return (
@@ -82,7 +90,7 @@ export default async function ProfilePage({ params }: PageProps) {
         <div className="flex justify-around text-center mt-12 border-y border-heavy-border/50 py-8">
           <div className="grid items-center justify-center">
             <span className="text-5xl font-black leading-none">
-              {workoutsSnap.size}
+              {workoutsSnapshot.size}
             </span>
             <p className="text-heavy-muted uppercase text-[10px] font-bold tracking-[0.3em] mt-2">
               Workouts
@@ -90,6 +98,20 @@ export default async function ProfilePage({ params }: PageProps) {
           </div>
         </div>
       </header>
+
+      <div className="mt-9">
+        {workoutsSnapshot.docs.map((w) => {
+          const rawData = w.data();
+
+          const workout = {
+            ...rawData,
+            id: w.id,
+            createdAt: rawData.createdAt?.toDate?.()?.toISOString() || null,
+          } as WorkoutData;
+
+          return <WorkoutCard data={workout} key={w.id} />;
+        })}
+      </div>
     </main>
   );
 }
