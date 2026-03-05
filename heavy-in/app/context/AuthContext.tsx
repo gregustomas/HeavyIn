@@ -7,7 +7,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
+import {
+  getIdToken,
+  onAuthStateChanged,
+  onIdTokenChanged,
+  User,
+} from "firebase/auth";
 import { auth, db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -30,17 +35,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    // onIdTokenChanged = onAuthStateChanged + hlídá refresh tokenu
+    const unsubscribe = onIdTokenChanged(auth, async (firebaseUser) => {
       setLoading(true);
 
       if (firebaseUser) {
-        // 1. Uživatel je v Auth, jdeme pro jeho data do Firestore
+        // Získáme token a uložíme do cookie
+        const token = await getIdToken(firebaseUser);
+        document.cookie = `auth-token=${token}; path=/; max-age=3600; SameSite=Strict`;
+
+        // Načteme data z Firestore
         const userDocRef = doc(db, "users", firebaseUser.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          // 2. Složíme dohromady Auth a Firestore data
           setUser({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
@@ -48,7 +57,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             avatarUrl: userData.avatarUrl || null,
           });
         } else {
-          // Uživatel existuje v Auth, ale nemá dokument v DB (např. po registraci)
           setUser({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
@@ -56,6 +64,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           });
         }
       } else {
+        // Odhlášení - smaž cookie
+        document.cookie = "auth-token=; path=/; max-age=0";
         setUser(null);
       }
 
