@@ -106,6 +106,11 @@ export function LoginForm({
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
+                {error && (
+                  <FieldDescription className="text-red-500 text-center">
+                    {error}
+                  </FieldDescription>
+                )}
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
                   <Link href="/signup">Sign up</Link>

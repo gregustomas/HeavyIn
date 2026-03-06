@@ -1,17 +1,14 @@
 "use client";
 
-import Button from "@/components/Button";
-import { FormField } from "@/components/FormField";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 import { LoginForm } from "@/components/loginForm";
+import { GalleryVerticalEnd } from "lucide-react";
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
   const { user } = useAuth();
   const [error, setError] = useState("");
@@ -34,9 +31,17 @@ function LoginPage() {
   };
 
   return (
-    <main className="md:p-8 pb-30 max-w-7xl mx-auto p-4">
-      <LoginForm onSubmit={handleLogin} />
-    </main>
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <a href="#" className="flex items-center gap-2 self-center font-medium">
+          <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <GalleryVerticalEnd className="size-4" />
+          </div>
+          HeavyIn
+        </a>
+        <LoginForm onSubmit={handleLogin} error={error} />
+      </div>
+    </div>
   );
 }
 
