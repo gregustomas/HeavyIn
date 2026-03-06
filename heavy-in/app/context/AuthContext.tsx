@@ -7,12 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  getIdToken,
-  onAuthStateChanged,
-  onIdTokenChanged,
-  User,
-} from "firebase/auth";
+import { getIdToken, onIdTokenChanged, signOut } from "firebase/auth";
 import { auth, db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -26,6 +21,7 @@ interface CustomUser {
 interface AuthContextType {
   user: CustomUser | null;
   loading: boolean;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,6 +29,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<CustomUser | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const logout = async () => {
+    await signOut(auth);
+  };
 
   useEffect(() => {
     // onIdTokenChanged = onAuthStateChanged + hlídá refresh tokenu
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );
