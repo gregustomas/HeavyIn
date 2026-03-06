@@ -37,7 +37,7 @@ function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col justify-center px-6">
+    <main className="md:p-8 pb-30 max-w-7xl mx-auto relative">
       <div className="max-w-sm mx-auto w-full">
         <header className="mb-12">
           <h1 className="text-6xl font-black uppercase italic leading-none tracking-tighter">

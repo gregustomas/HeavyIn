@@ -97,7 +97,7 @@ function CreateWorkoutPage() {
   };
 
   return (
-    <main className="min-h-screen pb-4">
+    <main className="md:p-8 pb-30 max-w-7xl mx-auto">
       <div className="sticky mb-4 top-0 z-50 bg-white/90 backdrop-blur-sm p-4 flex items-center justify-between border-b border-heavy-border/50">
         <div className="flex flex-col tracking-tighter">
           <span className="text-xl font-black uppercase">Create</span>

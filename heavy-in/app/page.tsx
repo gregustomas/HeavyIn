@@ -88,23 +88,6 @@ export default function Home() {
 
   return (
     <main className="md:p-8 pb-30 max-w-7xl mx-auto p-4">
-      <div className="mb-8 flex justify-between">
-        <div>
-          <h1 className="text-heavy-teal text-4xl font-black tracking-tighter uppercase">
-            HeavyIn
-          </h1>
-          <p className="text-heavy-muted">Ready to lift heavy?</p>
-        </div>
-
-        <div className="bg-heavy-teal rounded-full w-12 h-12 flex items-center justify-center shadow-[0_0_15px_rgba(20,184,166,0.4)] border-2 border-white/10">
-          <User
-            size={26}
-            strokeWidth={2.5}
-            className="text-heavy-bg -translate-y-px"
-          />
-        </div>
-      </div>
-
       <div className="relative w-full group">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-heavy-muted group-focus-within:text-heavy-teal transition-colors">
           <Search size={20} strokeWidth={2.5} />

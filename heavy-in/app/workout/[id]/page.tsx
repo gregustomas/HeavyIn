@@ -45,7 +45,7 @@ async function WorkoutDetailPage({ params }: PageProps) {
     : { username: "User", avatarUrl: "/user.png" };
 
   return (
-    <main className="min-h-screen bg-heavy-bg text-heavy-main pb-20 relative">
+    <main className="md:p-8 pb-30 max-w-7xl mx-auto relative">
       <div className="absolute top-6 right-4 z-10">
         <BackBtn link="/" />
       </div>
@@ -60,7 +60,7 @@ async function WorkoutDetailPage({ params }: PageProps) {
         />
         <div className="absolute inset-0 bg-linear-to-t from-heavy-bg via-transparent to-black/20" />
 
-        <div className="absolute bottom-0 left-0 p-6 pb-2 w-full">
+        <div className="absolute bottom-0 left-0 p-4 pb-2 w-full">
           <div className="flex gap-2 mb-3">
             <span className="bg-heavy-teal text-heavy-bg text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">
               {workout.split}

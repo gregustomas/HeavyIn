@@ -54,7 +54,7 @@ export default async function ProfilePage({ params }: PageProps) {
   );
 
   return (
-    <main className="min-h-screen bg-heavy-bg text-heavy-main p-6">
+    <main className="md:p-8 pb-30 max-w-7xl mx-auto p-4">
       <header className="max-w-xl mx-auto space-y-12">
         <div className="flex justify-between items-center">
           <div className="font-black uppercase tracking-widest text-[10px] opacity-50">
