@@ -1,13 +1,7 @@
 import { db } from "@/app/firebase";
-import WorkoutCard, { WorkoutData } from "@/components/WorkoutCard";
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { WorkoutCard } from "@/components/workout-card";
+import { WorkoutData } from "@/components/WorkoutCard";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { Settings } from "lucide-react";
 import Image from "next/image";
 

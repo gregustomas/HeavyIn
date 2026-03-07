@@ -75,13 +75,16 @@ function CreateWorkoutPage() {
 
     try {
       const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userData = userDoc.exists() ? userDoc.data() : null;
       const realUsername = userDoc.exists()
         ? userDoc.data().username
         : user.email?.split("@")[0];
+      const avatarUrl = userData?.avatarUrl ?? "/user.png";
 
       await addDoc(collection(db, "workouts"), {
         userId: user.uid,
         author: realUsername,
+        avatarUrl: avatarUrl,
         title: workoutData.title,
         description: workoutData.description,
         split: workoutData.split,

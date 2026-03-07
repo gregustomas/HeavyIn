@@ -1,6 +1,5 @@
 "use client";
 
-import WorkoutCard from "@/components/WorkoutCard";
 import { useEffect, useState } from "react";
 import {
   collection,
@@ -12,8 +11,9 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { Search, User } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
+import { WorkoutCard } from "@/components/workout-card";
 
 export default function Home() {
   const [workouts, setWorkouts] = useState<any[]>([]);
