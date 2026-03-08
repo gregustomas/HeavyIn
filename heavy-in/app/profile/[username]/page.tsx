@@ -1,9 +1,10 @@
 import { db } from "@/app/firebase";
 import { WorkoutCard } from "@/components/workout-card";
 import { WorkoutData } from "@/components/WorkoutCard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { Settings } from "lucide-react";
-import Image from "next/image";
+import Link from "next/link";
 
 interface PageProps {
   params: Promise<{ username: string }>;
@@ -21,10 +22,8 @@ async function getUserData(username: string): Promise<UserData | null> {
     where("username", "==", username.toLowerCase()),
     limit(1),
   );
-
   const querySnap = await getDocs(q);
   if (querySnap.empty) return null;
-
   return querySnap.docs[0].data() as UserData;
 }
 
@@ -34,10 +33,10 @@ export default async function ProfilePage({ params }: PageProps) {
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-heavy-bg text-heavy-main flex flex-col items-center justify-center gap-4">
+      <main className="min-h-screen flex flex-col items-center justify-center gap-2">
         <h1 className="text-4xl font-black uppercase italic opacity-20">404</h1>
-        <p className="font-bold uppercase tracking-widest">
-          Uživatel @{username} nenalezen
+        <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+          @{username} not found
         </p>
       </main>
     );
@@ -48,55 +47,43 @@ export default async function ProfilePage({ params }: PageProps) {
   );
 
   return (
-    <main className="md:p-8 pb-30 max-w-7xl mx-auto p-4">
-      <header className="max-w-xl mx-auto space-y-12">
-        <div className="flex justify-between items-center">
-          <div className="font-black uppercase tracking-widest text-[10px] opacity-50">
-            My Account
-          </div>
-          <Settings className="w-5 h-5 cursor-pointer hover:rotate-90 transition-transform duration-300" />
+    <main className="max-w-xl mx-auto p-4 pb-30 pt-8 space-y-6">
+      {/* Avatar + Info */}
+      <div className="flex flex-col items-center text-center gap-4">
+        <Avatar className="w-24 h-24 border-2 border-border">
+          <AvatarImage
+            src={user.avatarUrl || "/user.png"}
+            alt={user.username}
+          />
+          <AvatarFallback>
+            {user.username.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+
+        <div>
+          <h2 className="text-2xl font-black tracking-tighter uppercase">
+            @{user.username}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1 max-w-xs">
+            {user.bio || "No excuses, just heavy lifting."}
+          </p>
         </div>
+      </div>
 
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-45 h-45 border-2 border-heavy-teal/20 p-1 rounded-full relative">
-            <div className="w-full h-full rounded-full overflow-hidden relative border border-heavy-teal/40">
-              <Image
-                src={user.avatarUrl || "/user.png"}
-                alt={user.username}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <h2 className="text-3xl font-black tracking-tighter uppercase italic">
-              @{user.username}
-            </h2>
-            <p className="text-heavy-muted text-sm max-w-xs mx-auto leading-tight">
-              {user.bio || "No excuses, just heavy lifting."}
-            </p>
-          </div>
+      {/* Stats */}
+      <div className="border-y py-6 flex justify-around text-center">
+        <div>
+          <p className="text-4xl font-black">{workoutsSnapshot.size}</p>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
+            Workouts
+          </p>
         </div>
+      </div>
 
-        {/* Stats */}
-        <div className="flex justify-around text-center mt-12 border-y border-heavy-border/50 py-8">
-          <div className="grid items-center justify-center">
-            <span className="text-5xl font-black leading-none">
-              {workoutsSnapshot.size}
-            </span>
-            <p className="text-heavy-muted uppercase text-[10px] font-bold tracking-[0.3em] mt-2">
-              Workouts
-            </p>
-          </div>
-        </div>
-      </header>
-
-      <div className="mt-9">
+      {/* Workouts */}
+      <div className="space-y-4">
         {workoutsSnapshot.docs.map((w) => {
           const rawData = w.data();
-
           const workout = {
             ...rawData,
             id: w.id,
