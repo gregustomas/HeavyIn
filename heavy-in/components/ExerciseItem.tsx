@@ -1,9 +1,7 @@
-"use client";
-
 import { Plus, Trash2 } from "lucide-react";
-import { FormField } from "./FormField";
-import { useState } from "react";
-import Button from "./Button";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
 export interface ExerciseData {
   id: string;
@@ -11,109 +9,104 @@ export interface ExerciseData {
   sets: string;
   reps: string;
   note: string;
+  showNote: boolean;
 }
 
 interface ExerciseItemProps {
-  data: ExerciseData;
   index: number;
-  onUpdate: (index: number, updatedData: ExerciseData) => void;
-  onRemove: (index: string) => void;
-  isRemovable: boolean;
+  data: ExerciseData;
+  onUpdate: (id: string, field: string, value: string | boolean) => void;
+  onRemove: (id: string) => void;
 }
 
 export default function ExerciseItem({
   index,
-  onRemove,
-  isRemovable,
   data,
   onUpdate,
+  onRemove,
 }: ExerciseItemProps) {
-  const handleChange = (field: keyof ExerciseData, value: string) => {
-    onUpdate(index, { ...data, [field]: value });
-  };
-
-  const [showNote, setShowNote] = useState(!!data.note);
+  const { id, name, sets, reps, note, showNote } = data;
 
   return (
-    <div className="w-full border-heavy-border border-2 rounded-2xl p-5 bg-heavy-card relative group transition-all hover:border-heavy-teal/30">
-      {/* Header cviku */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3">
-          <span className="w-8 h-8 rounded-lg bg-heavy-teal/20 flex items-center justify-center text-heavy-teal font-black text-sm italic">
+    <div className="rounded-lg border border-[#e0e0e0] bg-background p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#00b894] text-xs font-bold text-white">
             {index + 1}
           </span>
-          <span className="text-[10px] font-black uppercase tracking-widest text-heavy-muted">
-            Exercise details
+          <span className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+            Exercise Details
           </span>
         </div>
-
-        {isRemovable && (
-          <button
-            type="button"
-            onClick={() => onRemove(data.id)}
-            className="p-2 hover:bg-heavy-coral/10 rounded-lg transition-colors group/trash"
-          >
-            <Trash2
-              size={20}
-              className="text-heavy-muted group-hover/trash:text-heavy-coral"
-            />
-          </button>
-        )}
+        <button
+          onClick={() => onRemove(id)}
+          className="text-[#8a8580] transition-colors hover:text-[#e07850]"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
       </div>
 
-      {/* Inputy */}
-      <div className="grid gap-5">
-        <FormField label="name">
-          <input
-            type="text"
-            className="input-heavy p-3"
+      <div className="space-y-3">
+        {/* Name */}
+        <div className="space-y-1">
+          <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+            Name
+          </Label>
+          <Input
             placeholder="e.g. Bench Press"
-            required
-            value={data.name}
-            onChange={(e) => handleChange("name", e.target.value)}
+            value={name}
+            onChange={(e) => onUpdate(id, "name", e.target.value)}
+            className="rounded-lg border-[#e0e0e0] bg-background"
           />
-        </FormField>
-
-        <div className="grid grid-cols-2 gap-4">
-          <FormField label="sets">
-            <input
-              type="number"
-              placeholder="0"
-              className="input-heavy p-3"
-              value={data.sets}
-              onChange={(e) => handleChange("sets", e.target.value)}
-            />
-          </FormField>
-
-          <FormField label="reps">
-            <input
-              type="text"
-              placeholder="6-8"
-              className="input-heavy p-3"
-              value={data.reps}
-              onChange={(e) => handleChange("reps", e.target.value)}
-            />
-          </FormField>
         </div>
 
-        {!showNote ? (
-          <Button
-            type="button"
-            variant="clear"
-            onClick={() => setShowNote(true)}
-          >
-            <Plus />
-            Add note
-          </Button>
-        ) : (
-          <FormField label="note">
-            <textarea
-              className="textarea-heavy p-3 min-h-20"
-              placeholder="Focus on eccentric phase..."
-              value={data.note}
-              onChange={(e) => handleChange("note", e.target.value)}
+        {/* Sets & Reps */}
+        <div className="flex gap-4">
+          <div className="flex-1 space-y-1">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+              Sets
+            </Label>
+            <Input
+              placeholder="0"
+              value={sets}
+              onChange={(e) => onUpdate(id, "sets", e.target.value)}
+              className="rounded-lg border-[#e0e0e0] bg-background"
             />
-          </FormField>
+          </div>
+          <div className="flex-1 space-y-1">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+              Reps
+            </Label>
+            <Input
+              placeholder="6-8"
+              value={reps}
+              onChange={(e) => onUpdate(id, "reps", e.target.value)}
+              className="rounded-lg border-[#e0e0e0] bg-background"
+            />
+          </div>
+        </div>
+
+        {/* Note */}
+        {showNote ? (
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+              Note
+            </Label>
+            <Textarea
+              placeholder="Add a note..."
+              value={note}
+              onChange={(e) => onUpdate(id, "note", e.target.value)}
+              className="min-h-15 rounded-lg border-[#e0e0e0] bg-background"
+            />
+          </div>
+        ) : (
+          <button
+            onClick={() => onUpdate(id, "showNote", true)}
+            className="flex items-center gap-1 text-sm font-medium text-[#00b894] hover:text-[#00a383]"
+          >
+            <Plus className="h-4 w-4" />
+            Add note
+          </button>
         )}
       </div>
     </div>

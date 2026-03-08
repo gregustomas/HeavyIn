@@ -32,7 +32,7 @@ export default function ImageUpload({ image, setImage }: ImageUploadProps) {
     <div className="grid gap-2">
       <div
         onClick={() => !image && fileInputRef.current?.click()}
-        className={`relative flex flex-col items-center justify-center h-30 border-2 border-dashed border-heavy-border rounded-3xl bg-heavy-card transition-all overflow-hidden group ${!image ? "cursor-pointer hover:border-heavy-teal/50" : ""}`}
+        className={`relative flex flex-col items-center justify-center h-40 border-2 border-dashed border-heavy-border rounded-3xl bg-heavy-card transition-all overflow-hidden group ${!image ? "cursor-pointer hover:border-heavy-teal/50" : ""}`}
       >
         {image ? (
           <>

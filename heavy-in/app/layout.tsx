@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Topbar />
-          <main className="mb-25">{children}</main>
+          <main className="mb-20">{children}</main>
 
           <Navbar />
         </AuthProvider>
