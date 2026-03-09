@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import ExerciseItem from "./ExerciseItem";
 import ImageUpload from "./ImageUpload";
+import { workoutSchema } from "@/app/lib/schemas";
 
 interface Exercise {
   id: string;
@@ -44,8 +45,21 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
   const [exercises, setExercises] = useState<Exercise[]>([
     { id: "1", name: "", sets: "", reps: "", note: "", showNote: false },
   ]);
+  const [error, setError] = useState("");
 
   const handlePublish = () => {
+    const result = workoutSchema.safeParse({
+      title,
+      description,
+      split,
+      exercises,
+    });
+
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      return;
+    }
+
     onPublish?.({
       title,
       description,
@@ -81,18 +95,25 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
-      <div className="sticky top-0 z-50 bg-background border-b px-4 py-3 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-heavy-muted">CREATE</h1>
-          <h2 className="text-xl font-bold text-heavy-teal">WORKOUT</h2>
+      <div className="sticky top-0 z-50 bg-background border-b px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-heavy-muted">CREATE</h1>
+            <h2 className="text-xl font-bold text-heavy-teal">WORKOUT</h2>
+          </div>
+          <Button
+            className="rounded-full bg-heavy-teal px-6 hover:bg-heavy-teal/80"
+            onClick={handlePublish}
+          >
+            PUBLISH
+          </Button>
         </div>
-        <Button
-          className="rounded-full bg-heavy-teal px-6 hover:bg-heavy-teal/80"
-          onClick={handlePublish}
-        >
-          PUBLISH
-        </Button>
+
+        {error && (
+          <p className="text-red-500 text-xs pt-2 text-center font-bold">{error}</p>
+        )}
       </div>
+
       {/* Form */}
       <div className="space-y-4 p-4">
         {/* Title */}

@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { signupSchema } from "../lib/schemas";
 
 export default function SignupPage() {
   const [error, setError] = useState("");
@@ -24,7 +25,19 @@ export default function SignupPage() {
     username: string,
     email: string,
     password: string,
+    confirmPassword: string,
   ) => {
+    const result = signupSchema.safeParse({
+      username,
+      email,
+      password,
+      confirmPassword,
+    });
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      return;
+    }
+
     try {
       const { user } = await createUserWithEmailAndPassword(
         auth,

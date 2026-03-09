@@ -7,6 +7,7 @@ import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 import { LoginForm } from "@/components/loginForm";
 import { GalleryVerticalEnd } from "lucide-react";
+import { loginSchema } from "../lib/schemas";
 
 function LoginPage() {
   const router = useRouter();
@@ -22,6 +23,12 @@ function LoginPage() {
   if (user) return null;
 
   const handleLogin = async (email: string, password: string) => {
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/");

@@ -20,7 +20,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 interface SignupFormProps {
-  onSubmit: (username: string, email: string, password: string) => void;
+  onSubmit: (
+    username: string,
+    email: string,
+    password: string,
+    confirmPassword: string,
+  ) => void;
   error?: string;
   className?: string;
 }
@@ -43,7 +48,7 @@ export function SignupForm({
       setPasswordError("Hesla se neshodují.");
       return;
     }
-    onSubmit(username, email, password);
+    onSubmit(username, email, password, confirmPassword);
   };
 
   return (
