@@ -1,26 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import { useRouter } from "next/navigation";
+import { auth, signInWithGoogle } from "../firebase";
 import { LoginForm } from "@/components/loginForm";
 import { GalleryVerticalEnd } from "lucide-react";
 import { loginSchema } from "../lib/schemas";
 
 function LoginPage() {
-  const router = useRouter();
-  const { user } = useAuth();
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [user, router]);
-
-  if (user) return null;
 
   const handleLogin = async (email: string, password: string) => {
     const result = loginSchema.safeParse({ email, password });
@@ -31,7 +19,6 @@ function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
     } catch {
       setError("Špatný e-mail nebo heslo.");
     }
@@ -46,7 +33,11 @@ function LoginPage() {
           </div>
           HeavyIn
         </a>
-        <LoginForm onSubmit={handleLogin} error={error} />
+        <LoginForm
+          onSubmit={handleLogin}
+          onGoogleLogin={signInWithGoogle}
+          error={error}
+        />
       </div>
     </div>
   );

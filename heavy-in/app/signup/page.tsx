@@ -2,24 +2,14 @@
 
 import { GalleryVerticalEnd } from "lucide-react";
 import { SignupForm } from "@/components/signup-form";
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth, db, signInWithGoogle } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
 import { signupSchema } from "../lib/schemas";
 
 export default function SignupPage() {
   const [error, setError] = useState("");
-  const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) router.push("/");
-  }, [user, router]);
-
-  if (user) return null;
 
   const handleSignup = async (
     username: string,
@@ -53,8 +43,6 @@ export default function SignupPage() {
         avatarUrl: "/user.png",
         createdAt: serverTimestamp(),
       });
-
-      router.push("/");
     } catch (err: any) {
       if (err.code === "auth/email-already-in-use")
         setError("Email je již obsazený.");
@@ -73,7 +61,11 @@ export default function SignupPage() {
           </div>
           HeavyIn
         </a>
-        <SignupForm onSubmit={handleSignup} error={error} />
+        <SignupForm
+          onSubmit={handleSignup}
+          onGoogleLogin={signInWithGoogle}
+          error={error}
+        />
       </div>
     </div>
   );
