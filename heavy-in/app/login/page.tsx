@@ -6,9 +6,22 @@ import { auth, signInWithGoogle } from "../firebase";
 import { LoginForm } from "@/components/loginForm";
 import { GalleryVerticalEnd } from "lucide-react";
 import { loginSchema } from "../lib/schemas";
+import { useRouter } from "next/navigation";
 
 function LoginPage() {
   const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleGoogle = async () => {
+    try {
+      const user = await signInWithGoogle();
+      const token = await user.getIdToken();
+      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
+      router.push("/");
+    } catch {
+      setError("Přihlášení přes Google selhalo.");
+    }
+  };
 
   const handleLogin = async (email: string, password: string) => {
     const result = loginSchema.safeParse({ email, password });
@@ -18,7 +31,10 @@ function LoginPage() {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      const token = await user.getIdToken();
+      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
+      router.push("/");
     } catch {
       setError("Špatný e-mail nebo heslo.");
     }
@@ -35,7 +51,7 @@ function LoginPage() {
         </a>
         <LoginForm
           onSubmit={handleLogin}
-          onGoogleLogin={signInWithGoogle}
+          onGoogleLogin={handleGoogle}
           error={error}
         />
       </div>

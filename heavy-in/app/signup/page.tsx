@@ -7,9 +7,22 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db, signInWithGoogle } from "../firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { signupSchema } from "../lib/schemas";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleGoogle = async () => {
+    try {
+      const user = await signInWithGoogle();
+      const token = await user.getIdToken();
+      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
+      router.push("/");
+    } catch {
+      setError("Přihlášení přes Google selhalo.");
+    }
+  };
 
   const handleSignup = async (
     username: string,
@@ -43,6 +56,10 @@ export default function SignupPage() {
         avatarUrl: "/user.png",
         createdAt: serverTimestamp(),
       });
+
+      const token = await user.getIdToken();
+      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
+      router.push("/");
     } catch (err: any) {
       if (err.code === "auth/email-already-in-use")
         setError("Email je již obsazený.");
@@ -63,7 +80,7 @@ export default function SignupPage() {
         </a>
         <SignupForm
           onSubmit={handleSignup}
-          onGoogleLogin={signInWithGoogle}
+          onGoogleLogin={handleGoogle}
           error={error}
         />
       </div>
