@@ -71,6 +71,7 @@ export default function ExerciseItem({
               value={sets}
               onChange={(e) => onUpdate(id, "sets", e.target.value)}
               className="rounded-lg border-[#e0e0e0] bg-background"
+              maxLength={1}
             />
           </div>
           <div className="flex-1 space-y-1">
@@ -82,6 +83,7 @@ export default function ExerciseItem({
               value={reps}
               onChange={(e) => onUpdate(id, "reps", e.target.value)}
               className="rounded-lg border-[#e0e0e0] bg-background"
+              maxLength={5}
             />
           </div>
         </div>

@@ -43,7 +43,14 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
   const [split, setSplit] = useState("custom");
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [exercises, setExercises] = useState<Exercise[]>([
-    { id: "1", name: "", sets: "", reps: "", note: "", showNote: false },
+    {
+      id: crypto.randomUUID(),
+      name: "",
+      sets: "",
+      reps: "",
+      note: "",
+      showNote: false,
+    },
   ]);
   const [error, setError] = useState("");
 
@@ -70,7 +77,7 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
   };
 
   const addExercise = () => {
-    const newId = String(exercises.length + 1);
+    const newId = crypto.randomUUID();
     setExercises([
       ...exercises,
       { id: newId, name: "", sets: "", reps: "", note: "", showNote: false },
@@ -110,7 +117,9 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
         </div>
 
         {error && (
-          <p className="text-red-500 text-xs pt-2 text-center font-bold">{error}</p>
+          <p className="text-red-500 text-xs pt-2 text-center font-bold">
+            {error}
+          </p>
         )}
       </div>
 
@@ -170,7 +179,7 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
         <div className="space-y-4">
           {exercises.map((exercise, index) => (
             <ExerciseItem
-              key={exercise.id}
+              key={index}
               index={index}
               data={exercise}
               onUpdate={updateExercise}

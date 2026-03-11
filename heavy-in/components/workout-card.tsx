@@ -9,10 +9,11 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Flame, Share2, Zap } from "lucide-react";
-import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/app/firebase";
 import Link from "next/link";
+import ShareBtn from "./ShareBtn";
+import { formatDate } from "@/lib/utils";
+import UserCard from "./UserCard";
+import { Badge } from "./ui/badge";
 
 interface Exercise {
   id: string;
@@ -32,18 +33,6 @@ interface WorkoutCardProps {
   image?: string | null;
 }
 
-function formatDate(date: any): string {
-  // Firestore Timestamp má metodu .toDate()
-  const d = date?.toDate?.() ?? new Date(date);
-  return d
-    .toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "numeric",
-      year: "numeric",
-    })
-    .replace(/\//g, ". ");
-}
-
 export function WorkoutCard({ data }: { data: WorkoutCardProps }) {
   const {
     id,
@@ -57,40 +46,11 @@ export function WorkoutCard({ data }: { data: WorkoutCardProps }) {
     createdAt,
   } = data;
 
-  const exercisesCount = exercises.length;
-
   return (
     <Card className="w-full max-w-md border-0 bg-card shadow overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between gap-4 pb-2">
-        <Link href={"/profile/" + author}>
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={avatarUrl || "/user.png"} alt={author} />
-              <AvatarFallback>
-                {author?.charAt(0).toUpperCase() ?? "?"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-[#5c5a57]">
-                {author}
-              </span>
-              <span className="text-xs text-[#8a8580]">
-                {formatDate(createdAt!)}
-              </span>
-            </div>
-          </div>
-        </Link>
-        <button
-          onClick={() =>
-            navigator.share({
-              title,
-              url: `${window.location.origin}/workout/${id}`,
-            })
-          }
-          className="text-[#4a9e9e] cursor-pointer hover:text-[#3d8585] transition-colors"
-        >
-          <Share2 className="h-5 w-5" />
-        </button>
+        <UserCard author={author} avatarUrl={avatarUrl} date={createdAt} />
+        <ShareBtn id={id} title={title} />
       </CardHeader>
 
       {image && (
@@ -113,14 +73,14 @@ export function WorkoutCard({ data }: { data: WorkoutCardProps }) {
       </Link>
 
       <CardFooter className="flex gap-2 pt-4">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#d9d4cc] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#5c5a57] uppercase tracking-wide">
-          <Flame className="h-3.5 w-3.5 text-[#e07850]" />
+        <Badge variant="outline" className="gap-1.5">
+          <Flame className="h-3.5 w-3.5 text-orange-400" />
           {exercises.length} Exercises
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#d9d4cc] bg-transparent px-3 py-1.5 text-xs font-semibold text-[#5c5a57] uppercase tracking-wide">
-          <Zap className="h-3.5 w-3.5 text-[#d4a048]" />
+        </Badge>
+        <Badge variant="outline" className="gap-1.5">
+          <Zap className="h-3.5 w-3.5 text-yellow-500" />
           {split}
-        </span>
+        </Badge>
       </CardFooter>
     </Card>
   );

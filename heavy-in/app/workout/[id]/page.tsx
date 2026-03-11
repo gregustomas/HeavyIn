@@ -1,7 +1,12 @@
 import { db } from "@/app/firebase";
-import BackBtn from "@/components/BackBtn";
 import ExerciseCard from "@/components/ExerciseCard";
+import ShareBtn from "@/components/ShareBtn";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import UserCard from "@/components/UserCard";
 import { doc, getDoc } from "firebase/firestore";
+import { Flame, Zap } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 
@@ -19,81 +24,83 @@ export async function generateMetadata({
   return {
     title: `${data?.title || "Workout"} | HeavyIn`,
     description: data?.description || "Check out this training plan on HeavyIn",
-    openGraph: {
-      images: [data?.image || "/cbum.avif"],
-    },
+    openGraph: { images: [data?.image || "/cbum.avif"] },
   };
 }
 
 async function WorkoutDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const workoutRef = doc(db, "workouts", id); // reference na kolekci
-  const workoutSnap = await getDoc(workoutRef); // získání dat
-  if (!workoutSnap.exists()) {
-    return (
-      <main className="p-4 text-heavy-main bg-heavy-bg">
-        Workout nebyl nalezen.
-      </main>
-    );
-  }
-  const workout = workoutSnap.data() as any;
+  const workoutSnap = await getDoc(doc(db, "workouts", id));
 
-  const userRef = doc(db, "users", workout.userId);
-  const userSnap = await getDoc(userRef);
-  const user = userSnap.exists()
-    ? userSnap.data()
-    : { username: "User", avatarUrl: "/user.png" };
+  if (!workoutSnap.exists()) {
+    return <main className="p-4">Workout nebyl nalezen.</main>;
+  }
+
+  const workout = workoutSnap.data() as any;
+  const {
+    title,
+    description,
+    image,
+    split,
+    exercises,
+    author,
+    avatarUrl,
+    createdAt,
+  } = workout;
 
   return (
-    <main className="md:p-8 pb-30 max-w-7xl mx-auto relative">
-      <div className="absolute top-6 right-4 z-10">
-        <BackBtn link="/" />
-      </div>
-
-      <div className="relative w-full h-100">
+    <main className="pb-10 max-w-2xl mx-auto">
+      {/* Cover image */}
+      <div className="relative w-full h-64">
         <Image
-          src={workout.image || "/cbum.avif"}
-          alt={workout.title}
+          src={image || "/cbum.avif"}
+          alt={title}
           fill
-          priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-heavy-bg via-transparent to-black/20" />
-
-        <div className="absolute bottom-0 left-0 p-4 pb-2 w-full">
-          <div className="flex gap-2 mb-3">
-            <span className="bg-heavy-teal text-heavy-bg text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter">
-              {workout.split}
-            </span>
-          </div>
-
-          <h1 className="text-6xl font-black uppercase tracking-tighter leading-[0.8] text-heavy-main">
-            {workout.title}
-          </h1>
-        </div>
       </div>
 
-      <div className="px-6 py-8 space-y-10">
-        <p className="text-heavy-muted text-lg leading-snug italic font-medium border-l-4 border-heavy-teal pl-5">
-          {workout.description}
-        </p>
-
-        <section className="space-y-4">
-          <div className="flex justify-between items-end border-b border-heavy-border pb-2">
-            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-heavy-muted">
-              Training Plan
-            </h2>
-            <span className="text-[10px] font-bold text-heavy-teal uppercase">
-              {workout.exercises.length} Exercises
-            </span>
+      {/* Header card */}
+      <Card className="mx-4 -mt-6 relative z-10 shadow-md">
+        <CardContent className="pt-4 pb-4">
+          <div className="flex justify-between items-start mb-3">
+            <UserCard author={author} avatarUrl={avatarUrl} date={createdAt} />
+            <ShareBtn title={title} id={id} />
           </div>
 
-          <div className="grid gap-4">
-            {workout.exercises?.map((ex: any, index: number) => (
-              <ExerciseCard index={index} data={ex} key={index} />
-            ))}
+          <h2 className="font-bold text-lg">{title}</h2>
+          {description && (
+            <p className="text-muted-foreground text-sm mt-1">{description}</p>
+          )}
+
+          <div className="flex gap-2 mt-3">
+            <Badge variant="outline" className="gap-1.5">
+              <Flame className="h-3.5 w-3.5 text-orange-400" />
+              {exercises.length} Exercises
+            </Badge>
+            <Badge variant="outline" className="gap-1.5">
+              <Zap className="h-3.5 w-3.5 text-yellow-500" />
+              {split}
+            </Badge>
           </div>
-        </section>
+        </CardContent>
+      </Card>
+
+      {/* Exercises */}
+      <div className="mx-4 mt-4">
+        <div className="flex justify-between items-center px-1 mb-2">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            Exercises
+          </span>
+          <span className="text-xs text-muted-foreground">
+            Total {exercises.length}
+          </span>
+        </div>
+        <div className="grid gap-2">
+          {exercises.map((exercise: any, index: number) => (
+            <ExerciseCard data={exercise} index={index} key={index} />
+          ))}
+        </div>
       </div>
     </main>
   );
