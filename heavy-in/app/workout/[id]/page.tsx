@@ -1,4 +1,5 @@
 import { db } from "@/app/firebase";
+import DeleteWorkoutBtn from "@/components/DeleteWorkoutBtn";
 import ExerciseCard from "@/components/ExerciseCard";
 import ShareBtn from "@/components/ShareBtn";
 import { Badge } from "@/components/ui/badge";
@@ -101,6 +102,9 @@ async function WorkoutDetailPage({ params }: PageProps) {
             <ExerciseCard data={exercise} index={index} key={index} />
           ))}
         </div>
+      </div>
+      <div className="grid justify-center p-4">
+        <DeleteWorkoutBtn workoutId={id} authorId={workout.userId} />
       </div>
     </main>
   );
