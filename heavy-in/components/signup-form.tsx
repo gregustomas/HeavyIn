@@ -27,7 +27,7 @@ interface SignupFormProps {
     password: string,
     confirmPassword: string,
   ) => void;
-  onGoogleLogin: () => void;
+  onGoogleLogin: () => Promise<void> | void;
   error?: string;
   className?: string;
 }
@@ -131,6 +131,11 @@ export function SignupForm({
                 {passwordError && (
                   <FieldDescription className="text-red-500">
                     {passwordError}
+                  </FieldDescription>
+                )}
+                {error && (
+                  <FieldDescription className="text-red-500">
+                    {error}
                   </FieldDescription>
                 )}
               </Field>

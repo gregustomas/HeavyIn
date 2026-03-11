@@ -22,7 +22,7 @@ import Link from "next/link";
 
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => void;
-  onGoogleLogin: () => void;
+  onGoogleLogin: () => Promise<void> | void;
   error?: string;
   className?: string;
 }

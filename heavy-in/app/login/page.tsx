@@ -7,21 +7,11 @@ import { LoginForm } from "@/components/loginForm";
 import { GalleryVerticalEnd } from "lucide-react";
 import { loginSchema } from "../lib/schemas";
 import { useRouter } from "next/navigation";
+import { handleGoogleAuth } from "@/lib/utils";
 
 function LoginPage() {
   const [error, setError] = useState("");
   const router = useRouter();
-
-  const handleGoogle = async () => {
-    try {
-      const user = await signInWithGoogle();
-      const token = await user.getIdToken();
-      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
-      router.push("/");
-    } catch {
-      setError("Přihlášení přes Google selhalo.");
-    }
-  };
 
   const handleLogin = async (email: string, password: string) => {
     const result = loginSchema.safeParse({ email, password });
@@ -51,7 +41,7 @@ function LoginPage() {
         </a>
         <LoginForm
           onSubmit={handleLogin}
-          onGoogleLogin={handleGoogle}
+          onGoogleLogin={() => handleGoogleAuth(router)}
           error={error}
         />
       </div>

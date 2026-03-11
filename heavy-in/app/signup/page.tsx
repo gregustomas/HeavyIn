@@ -4,25 +4,15 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { SignupForm } from "@/components/signup-form";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db, signInWithGoogle } from "../firebase";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { signupSchema } from "../lib/schemas";
 import { useRouter } from "next/navigation";
+import { handleGoogleAuth } from "@/lib/utils";
 
 export default function SignupPage() {
   const [error, setError] = useState("");
   const router = useRouter();
-
-  const handleGoogle = async () => {
-    try {
-      const user = await signInWithGoogle();
-      const token = await user.getIdToken();
-      document.cookie = `auth-token=${token}; path=/; max-age=3600`;
-      router.push("/");
-    } catch {
-      setError("Přihlášení přes Google selhalo.");
-    }
-  };
 
   const handleSignup = async (
     username: string,
@@ -41,6 +31,13 @@ export default function SignupPage() {
       return;
     }
 
+    const usernameRef = doc(db, "usernames", username);
+    const usernameSnap = await getDoc(usernameRef);
+    if (usernameSnap.exists()) {
+      setError("Username je již obsazený.");
+      return;
+    }
+
     try {
       const { user } = await createUserWithEmailAndPassword(
         auth,
@@ -56,6 +53,8 @@ export default function SignupPage() {
         avatarUrl: "/user.png",
         createdAt: serverTimestamp(),
       });
+
+      await setDoc(usernameRef, { uid: user.uid });
 
       const token = await user.getIdToken();
       document.cookie = `auth-token=${token}; path=/; max-age=3600`;
@@ -80,7 +79,7 @@ export default function SignupPage() {
         </a>
         <SignupForm
           onSubmit={handleSignup}
-          onGoogleLogin={handleGoogle}
+          onGoogleLogin={() => handleGoogleAuth(router)}
           error={error}
         />
       </div>
