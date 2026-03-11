@@ -70,7 +70,7 @@ const SearchBar = () => {
             ) : searchResults.length > 0 ? (
               searchResults.map((user) => (
                 <Link
-                  href={`/profile/${user.id}`}
+                  href={`/profile/${user.username}`}
                   key={user.id}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-heavy-border/40 transition-colors group/item"
                 >
