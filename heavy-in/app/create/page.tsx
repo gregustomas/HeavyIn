@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { CreateWorkoutForm } from "@/components/CreateWorkoutForm";
+import { getUnsplashImage } from "@/lib/unsplash";
 
 function CreateWorkoutPage() {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ function CreateWorkoutPage() {
         title: data.title,
         description: data.description,
         split: data.split,
-        image: data.coverImage,
+        image: data.coverImage ?? (await getUnsplashImage()),
         exercises: data.exercises,
         createdAt: serverTimestamp(),
       });

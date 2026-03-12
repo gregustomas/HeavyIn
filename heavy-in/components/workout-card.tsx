@@ -1,17 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Flame, Share2, Zap } from "lucide-react";
+import { Flame, Zap } from "lucide-react";
 import Link from "next/link";
 import ShareBtn from "./ShareBtn";
-import { formatDate } from "@/lib/utils";
 import UserCard from "./UserCard";
 import { Badge } from "./ui/badge";
 

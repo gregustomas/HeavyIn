@@ -1,10 +1,7 @@
 import { db } from "@/app/firebase";
 import { WorkoutCard } from "@/components/workout-card";
-import { WorkoutData } from "@/components/WorkoutCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
-import { Settings } from "lucide-react";
-import Link from "next/link";
 
 interface PageProps {
   params: Promise<{ username: string }>;
@@ -47,48 +44,52 @@ export default async function ProfilePage({ params }: PageProps) {
   );
 
   return (
-    <main className="max-w-xl mx-auto p-4 pb-30 pt-8 space-y-6">
-      {/* Avatar + Info */}
-      <div className="flex flex-col items-center text-center gap-4">
-        <Avatar className="w-24 h-24 border-2 border-border">
+    <main className="max-w-xl mx-auto pb-10 bg-linear-to-b from-[#f5f5f5] to-background">
+      <div className=" px-4 pt-10 pb-6 flex flex-col items-center text-center gap-4">
+        <Avatar className="w-24 h-24 border-4 border-background shadow-lg ring-2 ring-heavy-teal/30">
           <AvatarImage
             src={user.avatarUrl || "/user.png"}
             alt={user.username}
           />
-          <AvatarFallback>
+          <AvatarFallback className="text-2xl font-black bg-heavy-teal/10 text-heavy-teal">
             {user.username.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
 
         <div>
-          <h2 className="text-2xl font-black tracking-tighter uppercase">
+          <h2 className="text-2xl font-bold tracking uppercase">
             @{user.username}
           </h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-xs">
             {user.bio || "No excuses, just heavy lifting."}
           </p>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="border-y py-6 flex justify-around text-center">
-        <div>
-          <p className="text-4xl font-black">{workoutsSnapshot.size}</p>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">
-            Workouts
-          </p>
+        {/* Stats */}
+        <div className="flex gap-8 mt-2">
+          <div className="text-center">
+            <p className="text-3xl font-black text-heavy-teal">
+              {workoutsSnapshot.size}
+            </p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">
+              Workouts
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Workouts */}
-      <div className="space-y-4">
+      {/* Workouts sekce */}
+      <div className="px-4 space-y-4 mt-2">
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          Training Plans
+        </p>
         {workoutsSnapshot.docs.map((w) => {
           const rawData = w.data();
           const workout = {
             ...rawData,
             id: w.id,
             createdAt: rawData.createdAt?.toDate?.()?.toISOString() || null,
-          } as WorkoutData;
+          };
 
           return <WorkoutCard data={workout} key={w.id} />;
         })}
