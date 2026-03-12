@@ -22,6 +22,7 @@ interface AuthContextType {
   user: CustomUser | null;
   loading: boolean;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,6 +33,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     await signOut(auth);
+  };
+
+  const refreshUser = async () => {
+    if (!auth.currentUser) return;
+    const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      setUser((prev) => ({
+        ...prev!,
+        avatarUrl: userData.avatarUrl,
+        username: userData.username,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -76,7 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, refreshUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

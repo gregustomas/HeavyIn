@@ -37,8 +37,14 @@ export function AvatarDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/profile/${user?.username}`)}
+          >
+            Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push(`/settings`)}>
+            Settings
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
