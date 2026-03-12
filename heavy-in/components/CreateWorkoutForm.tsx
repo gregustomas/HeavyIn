@@ -101,7 +101,7 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
+    <div>
       <div className="sticky top-0 z-50 bg-background border-b px-4 py-3">
         <div className="flex items-center justify-between">
           <div>

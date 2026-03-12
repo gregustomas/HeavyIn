@@ -36,9 +36,8 @@ export default function DeleteWorkoutBtn({ workoutId, authorId }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">
+        <Button variant="destructive" className="cursor-pointer">
           <Trash2 className="h-4 w-4" />
-          Delete Workout
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

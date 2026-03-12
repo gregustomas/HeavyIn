@@ -59,6 +59,9 @@ async function WorkoutDetailPage({ params }: PageProps) {
           fill
           className="object-cover"
         />
+        <div className="absolute top-4 right-4">
+          <DeleteWorkoutBtn workoutId={id} authorId={workout.userId} />
+        </div>
       </div>
 
       {/* Header card */}
@@ -102,9 +105,6 @@ async function WorkoutDetailPage({ params }: PageProps) {
             <ExerciseCard data={exercise} index={index} key={index} />
           ))}
         </div>
-      </div>
-      <div className="grid justify-center p-4">
-        <DeleteWorkoutBtn workoutId={id} authorId={workout.userId} />
       </div>
     </main>
   );

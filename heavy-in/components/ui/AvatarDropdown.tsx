@@ -1,5 +1,4 @@
 import { useAuth } from "@/app/context/AuthContext";
-import { auth } from "@/app/firebase";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 export function AvatarDropdown() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
@@ -26,8 +25,13 @@ export function AvatarDropdown() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="rounded-full">
           <Avatar size="lg">
-            <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage
+              src={user?.avatarUrl || "/user.png"}
+              alt={user?.username ?? ""}
+            />
+            <AvatarFallback>
+              {user?.username?.charAt(0).toUpperCase() ?? "?"}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

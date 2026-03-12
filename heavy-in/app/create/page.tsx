@@ -51,7 +51,11 @@ function CreateWorkoutPage() {
     }
   };
 
-  return <CreateWorkoutForm onPublish={handleSaveWorkout} />;
+  return (
+    <div className="min-h-screen bg-[#f5f5f5]">
+      <CreateWorkoutForm onPublish={handleSaveWorkout} />
+    </div>
+  );
 }
 
 export default CreateWorkoutPage;

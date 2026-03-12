@@ -23,7 +23,7 @@ function Topbar() {
   if (pathname === "/create") return null;
 
   return (
-    <header className='class="top-0 z-50 sticky bg-background/95 supports-backdrop-filter:bg-background/60 shadow-sm backdrop-blur border-b w-full"'>
+    <header className='class="z-50 bg-background/50 supports-backdrop-filter:bg-background/60 shadow-sm backdrop-blur border-b w-full"'>
       <div className="flex justify-between items-center h-16 cs-container p-4">
         <h1 className="text-heavy-teal text-4xl font-black tracking-tighter uppercase">
           {getTitle()}
