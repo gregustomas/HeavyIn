@@ -5,6 +5,7 @@ import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const SearchBar = () => {
   const [isSearching, setIsSearching] = useState(true);
@@ -75,9 +76,15 @@ const SearchBar = () => {
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-heavy-border/40 transition-colors group/item"
                 >
                   {/* Avatar initials */}
-                  <div className="w-8 h-8 rounded-full bg-heavy-teal/15 text-heavy-teal flex items-center justify-center text-xs font-black uppercase shrink-0">
-                    {user.username?.[0] ?? "?"}
-                  </div>
+                  <Avatar className="w-8 h-8 shrink-0">
+                    <AvatarImage
+                      src={user.avatarUrl || "/user.png"}
+                      alt={user.username}
+                    />
+                    <AvatarFallback className="text-xs font-black uppercase bg-heavy-teal/15 text-heavy-teal">
+                      {"/user.png"}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex flex-col">
                     <span className="text-sm font-bold uppercase tracking-tight leading-none">
                       {user.username || "Unknown Athlete"}
