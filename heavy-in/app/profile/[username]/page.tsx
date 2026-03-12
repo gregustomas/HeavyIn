@@ -56,11 +56,13 @@ export default async function ProfilePage({ params }: PageProps) {
           </AvatarFallback>
         </Avatar>
 
-        <div>
+        <div className="max-w-full overflow-hidden">
+          {" "}
+          {/* Obal pro jistotu */}
           <h2 className="text-2xl font-bold tracking uppercase">
             @{user.username}
           </h2>
-          <p className="text-sm text-muted-foreground mt-1 max-w-xs">
+          <p className="text-sm text-muted-foreground mt-1 wrap-break-word whitespace-pre-wrap max-w-xs mx-auto">
             {user.bio || "No excuses, just heavy lifting."}
           </p>
         </div>

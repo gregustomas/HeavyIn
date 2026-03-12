@@ -16,6 +16,7 @@ interface CustomUser {
   email: string | null;
   username: string | null;
   avatarUrl?: string;
+  bio?: string;
 }
 
 interface AuthContextType {
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         ...prev!,
         avatarUrl: userData.avatarUrl,
         username: userData.username,
+        bio: userData.bio,
       }));
     }
   };
@@ -69,6 +71,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             email: firebaseUser.email,
             username: userData.username || null,
             avatarUrl: userData.avatarUrl || null,
+            bio: userData.bio || null,
           });
         } else {
           setUser({
