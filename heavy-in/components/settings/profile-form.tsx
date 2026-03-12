@@ -21,12 +21,11 @@ import {
   doc,
   getDocs,
   query,
-  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
 import { db } from "@/app/firebase";
-import { FieldDescription } from "../ui/field";
+import { profileSchema } from "@/app/lib/schemas";
 
 const ProfileForm = () => {
   const { user, refreshUser } = useAuth();
@@ -34,6 +33,7 @@ const ProfileForm = () => {
   const [pendingImg, setPendingImg] = useState<string | null>(null);
   const [username, setUsername] = useState(user?.username ?? "");
   const [bio, setBio] = useState(user?.bio ?? "");
+  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{
     type: "success" | "error";
     text: string;
@@ -61,44 +61,77 @@ const ProfileForm = () => {
   };
 
   const handleSaveProfile = async () => {
-    if (!user) return;
+    if (!user || loading) return;
 
-    const userUpdateData: any = {
-      username: username,
-      bio: bio,
-    };
+    const result = profileSchema.safeParse({ username, bio });
 
-    if (pendingImg) {
-      userUpdateData.avatarUrl = pendingImg;
+    if (!result.success) {
+      // Vezmeme první chybu, která nastala
+      const firstError = result.error.issues[0].message;
+      setStatus({ type: "error", text: firstError });
+      return;
     }
 
-    try {
-      await updateDoc(doc(db, "users", user.uid), userUpdateData);
+    const validatedData = result.data;
 
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      // 1. KONTROLA UNIKÁTNOSTI (stále probíhá samostatně před batchem)
+      if (validatedData.username !== user.username) {
+        const q = query(
+          collection(db, "users"),
+          where("username", "==", validatedData.username),
+        );
+        const querySnap = await getDocs(q);
+
+        if (!querySnap.empty) {
+          setStatus({
+            type: "error",
+            text: "Toto uživatelské jméno je již obsazené.",
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. INICIALIZACE BATCHE
+      const batch = writeBatch(db);
+
+      // 3. PŘÍPRAVA UPDATE PROFILU (vložíme do batche místo updateDoc)
+      const userRef = doc(db, "users", user.uid);
+      const userUpdateData = {
+        username: validatedData.username,
+        bio: validatedData.bio,
+        ...(pendingImg && { avatarUrl: pendingImg }), // Elegantní přidání fotky, jen pokud existuje
+      };
+
+      batch.update(userRef, userUpdateData);
+
+      // 4. PŘÍPRAVA UPDATE WORKOUTŮ
       const workoutsSnap = await getDocs(
         query(collection(db, "workouts"), where("userId", "==", user.uid)),
       );
 
-      const batch = writeBatch(db);
       workoutsSnap.docs.forEach((w) => {
         batch.update(w.ref, {
           avatarUrl: pendingImg ?? user.avatarUrl,
-          author: username,
+          author: validatedData.username,
         });
       });
-      await batch.commit();
-      await refreshUser();
 
+      // 5. ODESLÁNÍ VŠEHO NAJEDNOU
+      await batch.commit();
+
+      // Po úspěšném commitu osvěžíme data a vyčistíme stavy
+      await refreshUser();
       setPendingImg(null);
-      setStatus({
-        type: "success",
-        text: "Profil úspěšně uložen!",
-      });
+      setStatus({ type: "success", text: "Profil úspěšně uložen!" });
     } catch (error) {
-      setStatus({
-        type: "error",
-        text: "Chyba při ukládání:" + error,
-      });
+      setStatus({ type: "error", text: "Chyba při ukládání: " + error });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,25 +183,26 @@ const ProfileForm = () => {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 w-full">
             <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Napiš něco o sobě..."
-              className="resize-none min-h-25 rounded-lg border-slate-200 focus:ring-[#20b2aa] overflow-hidden w-full break-all"
+              className="resize-none min-h-25 rounded-lg border-slate-200 focus:ring-[#20b2aa] overflow-hidden w-full wrap-break-word"
               maxLength={255}
             />
           </div>
         </div>
       </CardContent>
-      <CardFooter className="bg-slate-50/50 border-t border-slate-100 px-6 py-4 grid justify-start">
+      <CardFooter className="bg-slate-50/50 border-t border-slate-100 px-6 py-4 flex flex-col items-start">
         <Button
           className="bg-[#20b2aa] hover:bg-[#1a938c] text-white font-semibold rounded-lg"
           onClick={handleSaveProfile}
+          disabled={loading}
         >
-          Uložit profil
+          {loading ? "Ukládám..." : "Uložit profil"}
         </Button>
         {status && (
           <p
