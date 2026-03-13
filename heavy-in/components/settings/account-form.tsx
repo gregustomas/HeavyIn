@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -9,19 +11,56 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useAuth } from "@/app/context/AuthContext";
+import { useState } from "react";
+import { auth } from "@/app/firebase";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
+import { toast } from "sonner";
 
 const AccountForm = () => {
+  const { user } = useAuth();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const isGoogleUser = auth.currentUser?.providerData.some(
+    (p) => p.providerId === "google.com",
+  );
+
+  if (isGoogleUser) {
+    // skryj sekci změny hesla úplně
+    return null;
+  }
+
+  const handlePasswordUpdate = async () => {
+    if (!auth.currentUser || !user?.email) return;
+
+    try {
+      // ověření starého hesla
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
+      await reauthenticateWithCredential(auth.currentUser, credential);
+
+      // nastavení nového
+      await updatePassword(auth.currentUser, newPassword);
+      toast.success("Heslo bylo úspěšně změněno.", { position: "top-center" });
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err: any) {
+      if (err.code === "auth/wrong-password")
+        toast.error("Špatné aktuální heslo.", { position: "top-center" });
+      else if (err.code === "auth/weak-password")
+        toast.error("Nové heslo musí mít alespoň 6 znaků.", {
+          position: "top-center",
+        });
+      else toast.error("Chyba při změně hesla.", { position: "top-center" });
+    }
+  };
+
   return (
     <Card className="border-none shadow-sm rounded-2xl overflow-hidden">
       <CardHeader>
@@ -34,6 +73,8 @@ const AccountForm = () => {
             <Label htmlFor="current-password">Aktuální heslo</Label>
             <Input
               id="current-password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
               type="password"
               className="rounded-lg border-slate-200"
             />
@@ -42,6 +83,8 @@ const AccountForm = () => {
             <Label htmlFor="new-password">Nové heslo</Label>
             <Input
               id="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               type="password"
               className="rounded-lg border-slate-200"
             />
@@ -49,37 +92,13 @@ const AccountForm = () => {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col sm:flex-row gap-3 justify-between border-t border-slate-100 px-6 py-4 bg-slate-50/50">
-        <Button variant="outline" className="w-full sm:w-auto rounded-lg">
+        <Button
+          variant="outline"
+          className="w-full sm:w-auto rounded-lg"
+          onClick={handlePasswordUpdate}
+        >
           Aktualizovat heslo
         </Button>
-
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="ghost"
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 w-full sm:w-auto"
-            >
-              Smazat účet
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="rounded-2xl">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Opravdu chceš skončit?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Tato akce trvale smaže tvůj účet a všechny tvoje tréninky (7
-                workoutů). Tohle nejde vzít zpět.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="rounded-lg">
-                Zrušit
-              </AlertDialogCancel>
-              <AlertDialogAction className="bg-red-500 hover:bg-red-600 text-white rounded-lg border-none">
-                Smazat navždy
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </CardFooter>
     </Card>
   );
