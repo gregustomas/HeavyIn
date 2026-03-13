@@ -62,7 +62,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Načteme data z Firestore
         const userDocRef = doc(db, "users", firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
+        let userDoc = await getDoc(userDocRef);
+
+        // Retry pokud doc ještě neexistuje (např. po Google signup)
+        if (!userDoc.exists()) {
+          await new Promise((res) => setTimeout(res, 1500));
+          userDoc = await getDoc(userDocRef);
+        }
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
