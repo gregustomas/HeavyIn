@@ -26,6 +26,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import { profileSchema } from "@/app/lib/schemas";
+import { toast } from "sonner";
 
 const ProfileForm = () => {
   const { user, refreshUser } = useAuth();
@@ -34,10 +35,6 @@ const ProfileForm = () => {
   const [username, setUsername] = useState(user?.username ?? "");
   const [bio, setBio] = useState(user?.bio ?? "");
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
 
   useEffect(() => {
     if (user?.username) {
@@ -68,14 +65,13 @@ const ProfileForm = () => {
     if (!result.success) {
       // Vezmeme první chybu, která nastala
       const firstError = result.error.issues[0].message;
-      setStatus({ type: "error", text: firstError });
+      toast.error(firstError, { position: "top-center" });
       return;
     }
 
     const validatedData = result.data;
 
     setLoading(true);
-    setStatus(null);
 
     try {
       // 1. KONTROLA UNIKÁTNOSTI (stále probíhá samostatně před batchem)
@@ -87,9 +83,8 @@ const ProfileForm = () => {
         const querySnap = await getDocs(q);
 
         if (!querySnap.empty) {
-          setStatus({
-            type: "error",
-            text: "Toto uživatelské jméno je již obsazené.",
+          toast.error("Toto uživatelské jméno je již obsazené.", {
+            position: "top-center",
           });
           setLoading(false);
           return;
@@ -127,9 +122,9 @@ const ProfileForm = () => {
       // Po úspěšném commitu osvěžíme data a vyčistíme stavy
       await refreshUser();
       setPendingImg(null);
-      setStatus({ type: "success", text: "Profil úspěšně uložen!" });
+      toast.success("Profil úspěšně uložen!", { position: "top-center" });
     } catch (error) {
-      setStatus({ type: "error", text: "Chyba při ukládání: " + error });
+      toast.error("Chyba při ukládání: " + error, { position: "top-center" });
     } finally {
       setLoading(false);
     }
@@ -204,15 +199,6 @@ const ProfileForm = () => {
         >
           {loading ? "Ukládám..." : "Uložit profil"}
         </Button>
-        {status && (
-          <p
-            className={`mt-3 text-sm text-center font-medium ${
-              status.type === "success" ? "text-emerald-600" : "text-red-500"
-            }`}
-          >
-            {status.text}
-          </p>
-        )}
       </CardFooter>
     </Card>
   );

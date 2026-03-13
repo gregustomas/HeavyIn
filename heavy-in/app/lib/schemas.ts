@@ -50,7 +50,13 @@ export const profileSchema = z.object({
     .or(z.literal("")),
 });
 
+export const passwordSchema = z.object({
+  currentPassword: z.string().min(1, "Zadej aktuální heslo"),
+  newPassword: z.string().min(6, "Nové heslo musí mít alespoň 6 znaků"),
+});
+
 export type LoginData = z.infer<typeof loginSchema>;
 export type SignupData = z.infer<typeof signupSchema>;
 export type WorkoutData = z.infer<typeof workoutSchema>;
 export type ProfileData = z.infer<typeof profileSchema>;
+export type PasswordData = z.infer<typeof passwordSchema>;

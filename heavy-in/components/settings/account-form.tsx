@@ -20,6 +20,7 @@ import {
   updatePassword,
 } from "firebase/auth";
 import { toast } from "sonner";
+import { passwordSchema } from "@/app/lib/schemas";
 
 const AccountForm = () => {
   const { user } = useAuth();
@@ -36,6 +37,12 @@ const AccountForm = () => {
 
   const handlePasswordUpdate = async () => {
     if (!auth.currentUser || !user?.email) return;
+
+    const result = passwordSchema.safeParse({ currentPassword, newPassword });
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      return;
+    }
 
     try {
       // ověření starého hesla
