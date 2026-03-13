@@ -4,25 +4,19 @@ import { DeleteAccountBtn } from "@/components/settings/delete-account-btn";
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-[#fafafa] pb-10">
-      <div className="max-w-2xl mx-auto p-4 pt-8 md:pt-12 space-y-8">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Nastavení
-          </h1>
-          <p className="text-slate-500">
-            Spravuj svůj profil a zabezpečení účtu.
-          </p>
-        </div>
-
-        <ProfileForm />
-        <AccountForm />
-        <DeleteAccountBtn />
-
-        <p className="text-center text-xs text-slate-400">
-          HeavyIn v1.0.2 • Made for athletes
+    <main className="page-container space-y-6 mb-5">
+      <div>
+        <h1 className="text-xl font-semibold">Settings</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          Manage your profile and account.
         </p>
       </div>
-    </div>
+      <ProfileForm />
+      <AccountForm />
+      <DeleteAccountBtn />
+      <p className="text-center text-xs text-muted-foreground">
+        HeavyIn v1.0 • Made for athletes
+      </p>
+    </main>
   );
 }

@@ -3,6 +3,7 @@
 import { useAuth } from "@/app/context/AuthContext";
 import { Home, Plus, User } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
 interface NavLinkProps {
@@ -21,6 +22,9 @@ function Navbar() {
     user: CustomUser | null;
     loading: boolean;
   };
+  const pathname = usePathname();
+
+  if (pathname === "/login" || pathname === "/signup") return null;
 
   if (loading) {
     return <nav className="...">Načítání...</nav>;
@@ -29,11 +33,11 @@ function Navbar() {
   const profileHref = user?.username ? `/profile/${user.username}` : "/login";
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-(--bg-secondary)/70 backdrop-blur-xl border-t border-heavy-border w-full flex items-center justify-center px-6 py-3 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur border-t w-full flex items-center justify-center px-6 py-2 z-40">
       <div className="flex items-center justify-around gap-10">
-        <NavLink href="/" icon={<Home size={24} />} label="Home" />
-        <NavLink href="/create" icon={<Plus size={24} />} label="Create" />
-        <NavLink href={profileHref} icon={<User size={24} />} label="Profile" />
+        <NavLink href="/" icon={<Home size={22} />} label="Home" />
+        <NavLink href="/create" icon={<Plus size={22} />} label="Create" />
+        <NavLink href={profileHref} icon={<User size={22} />} label="Profile" />
       </div>
     </nav>
   );

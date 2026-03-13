@@ -102,17 +102,19 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
 
   return (
     <div>
-      <div className="sticky top-0 z-50 bg-background border-b px-4 py-3">
+      <div className="sticky top-0 z-50 bg-background border-b px-4 py-3 h-14">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-heavy-muted">CREATE</h1>
-            <h2 className="text-xl font-bold text-heavy-teal">WORKOUT</h2>
+            <h1 className="text-heavy-teal text-3xl font-black tracking-tighter uppercase">
+              CREATE
+            </h1>
           </div>
           <Button
-            className="rounded-full bg-heavy-teal px-6 hover:bg-heavy-teal/80"
+            variant="outline"
+            className="rounded-full px-6 border-heavy-teal hover:text-heavy-teal bg-heavy-teal text-white transition-colors"
             onClick={handlePublish}
           >
-            PUBLISH
+            Publish
           </Button>
         </div>
 

@@ -59,45 +59,42 @@ export default function Home() {
     );
 
   return (
-    <main className="md:p-8 pb-10 max-w-7xl mx-auto p-4 pt-5 bg-[#f5f5f5]">
-      <div>
-        <SearchBar />
-        <div className="flex gap-2 my-4">
-          <Button
-            variant="outline"
-            className="h-9 w-28 text-sm"
-            onClick={() =>
-              setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"))
-            }
-          >
-            {sortOrder === "desc" ? "Newest ↓" : "Oldest ↑"}
-          </Button>
-
-          <Select value={splitFilter} onValueChange={setSplitFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm bg-background">
-              <SelectValue placeholder="All splits" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All splits</SelectItem>
-              <SelectItem value="custom">Custom</SelectItem>
-              <SelectItem value="fullbody">Fullbody</SelectItem>
-              <SelectItem value="upper">Upper</SelectItem>
-              <SelectItem value="lower">Lower</SelectItem>
-              <SelectItem value="push">Push</SelectItem>
-              <SelectItem value="pull">Pull</SelectItem>
-              <SelectItem value="legs">Legs</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+    <main className="page-container">
+      <SearchBar />
+      <div className="flex gap-2 my-4">
+        <Button
+          variant="outline"
+          className="h-9 w-28 text-sm bg-background"
+          onClick={() =>
+            setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"))
+          }
+        >
+          {sortOrder === "desc" ? "Newest ↓" : "Oldest ↑"}
+        </Button>
+        <Select value={splitFilter} onValueChange={setSplitFilter}>
+          <SelectTrigger className="w-36 h-9 text-sm bg-background">
+            <SelectValue placeholder="All splits" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All splits</SelectItem>
+            <SelectItem value="custom">Custom</SelectItem>
+            <SelectItem value="fullbody">Fullbody</SelectItem>
+            <SelectItem value="upper">Upper</SelectItem>
+            <SelectItem value="lower">Lower</SelectItem>
+            <SelectItem value="push">Push</SelectItem>
+            <SelectItem value="pull">Pull</SelectItem>
+            <SelectItem value="legs">Legs</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
+      <div className="flex flex-col gap-4">
         {filteredWorkouts.length > 0 ? (
           filteredWorkouts.map((workout) => (
             <WorkoutCard data={workout} key={workout.id} />
           ))
         ) : (
-          <p className="text-zinc-500 text-center py-10">
+          <p className="text-muted-foreground text-sm text-center py-12">
             No workouts found. Go lift something!
           </p>
         )}

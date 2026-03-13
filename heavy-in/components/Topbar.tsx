@@ -21,14 +21,15 @@ function Topbar() {
   }
 
   if (pathname === "/create") return null;
+  if (pathname === "/login") return null;
+  if (pathname === "/signup") return null;
 
   return (
-    <header className='class="z-50 bg-background/50 supports-backdrop-filter:bg-background/60 shadow-sm backdrop-blur border-b w-full"'>
-      <div className="flex justify-between items-center h-16 cs-container p-4">
-        <h1 className="text-heavy-teal text-4xl font-black tracking-tighter uppercase">
+    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b w-full">
+      <div className="max-w-2xl mx-auto flex justify-between items-center h-14 px-4">
+        <h1 className="text-heavy-teal text-3xl font-black tracking-tighter uppercase">
           {getTitle()}
         </h1>
-
         <AvatarDropdown />
       </div>
     </header>

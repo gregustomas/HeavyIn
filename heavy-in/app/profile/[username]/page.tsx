@@ -2,6 +2,8 @@ import { db } from "@/app/firebase";
 import { WorkoutCard } from "@/components/workout-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ username: string }>;
@@ -44,31 +46,27 @@ export default async function ProfilePage({ params }: PageProps) {
   );
 
   return (
-    <main className="max-w-xl mx-auto pb-10 bg-linear-to-b from-[#f5f5f5] to-background">
-      <div className=" px-4 pt-10 pb-6 flex flex-col items-center text-center gap-4">
-        <Avatar className="w-24 h-24 border-4 border-background shadow-lg ring-2 ring-heavy-teal/30">
-          <AvatarImage
-            src={user.avatarUrl || "/user.png"}
-            alt={user.username}
-          />
-          <AvatarFallback className="text-2xl font-black bg-heavy-teal/10 text-heavy-teal">
-            {user.username.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-
-        <div className="max-w-full overflow-hidden">
-          {" "}
-          {/* Obal pro jistotu */}
-          <h2 className="text-2xl font-bold tracking">@{user.username}</h2>
-          <p className="text-sm text-muted-foreground mt-1 wrap-break-word whitespace-pre-wrap max-w-xs mx-auto">
-            {user.bio || "No excuses, just heavy lifting."}
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div className="flex gap-8 mt-2">
-          <div className="text-center">
-            <p className="text-3xl font-black text-heavy-teal">
+    <main className="pb-24">
+      {/* Profile header – bílá karta */}
+      <div className="bg-background border-b">
+        <div className="page-container pb-6 flex flex-col items-center text-center gap-3">
+          <Avatar className="w-20 h-20 ring-2 ring-heavy-teal/20">
+            <AvatarImage
+              src={user.avatarUrl || "/user.png"}
+              alt={user.username}
+            />
+            <AvatarFallback className="text-xl font-semibold bg-heavy-teal/10 text-heavy-teal">
+              {user.username.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="text-lg font-semibold">@{user.username}</h2>
+            <p className="text-sm text-muted-foreground mt-1 max-w-xs">
+              {user.bio || "No excuses, just heavy lifting."}
+            </p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-heavy-teal">
               {workoutsSnapshot.size}
             </p>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">
@@ -78,21 +76,36 @@ export default async function ProfilePage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Workouts sekce */}
-      <div className="px-4 space-y-4 mt-2">
-        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+      {/* Workouts */}
+      {/* Workouts */}
+      <div className="page-container pt-4 space-y-4">
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
           Training Plans
         </p>
-        {workoutsSnapshot.docs.map((w) => {
-          const rawData = w.data();
-          const workout = {
-            ...rawData,
-            id: w.id,
-            createdAt: rawData.createdAt?.toDate?.()?.toISOString() || null,
-          };
-
-          return <WorkoutCard data={workout} key={w.id} />;
-        })}
+        {workoutsSnapshot.size === 0 ? (
+          <div className="flex flex-col items-center text-center py-12 gap-3">
+            <p className="text-sm text-muted-foreground">
+              No training plans yet.
+            </p>
+            <Link
+              href="/create"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-heavy-teal hover:text-heavy-teal text-sm font-medium bg-heavy-teal hover:bg-white text-white transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              Create workout
+            </Link>
+          </div>
+        ) : (
+          workoutsSnapshot.docs.map((w) => {
+            const rawData = w.data();
+            const workout = {
+              ...rawData,
+              id: w.id,
+              createdAt: rawData.createdAt?.toDate?.()?.toISOString() || null,
+            };
+            return <WorkoutCard data={workout} key={w.id} />;
+          })
+        )}
       </div>
     </main>
   );

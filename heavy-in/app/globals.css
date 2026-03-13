@@ -9,6 +9,7 @@
   --bg-card: #ffffff;
   --text-secondary: #6b6b6b;
   --border-color: #e5e5e5;
+  --bg-page: #f4f4f5;
 
   --accent-primary: #14b8a6;
   --accent-secondary: #ff6b9d;
@@ -62,6 +63,7 @@
   --color-heavy-bg: var(--background);
   --color-heavy-surface: var(--bg-secondary);
   --color-heavy-card: var(--bg-card);
+  --color-page-bg: var(--bg-page);
 
   /* Texty */
   --color-heavy-main: var(--foreground);
@@ -132,6 +134,10 @@
 
 @utility textarea-heavy {
   @apply input-heavy min-h-30 resize-none;
+}
+
+@utility page-container {
+  @apply max-w-2xl mx-auto p-4 pb-10 pt-6;
 }
 
 .dark {
