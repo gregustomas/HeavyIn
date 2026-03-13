@@ -13,9 +13,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ExerciseItem from "./ExerciseItem";
-import ImageUpload from "./ImageUpload";
+
 import { workoutSchema } from "@/app/lib/schemas";
+import ExerciseItem from "../ExerciseItem";
+import ImageUpload from "../shared/ImageUpload";
+import { toast } from "sonner";
 
 interface Exercise {
   id: string;
@@ -52,7 +54,6 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
       showNote: false,
     },
   ]);
-  const [error, setError] = useState("");
 
   const handlePublish = () => {
     const result = workoutSchema.safeParse({
@@ -63,7 +64,7 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
     });
 
     if (!result.success) {
-      setError(result.error.issues[0].message);
+      toast.error(result.error.issues[0].message, { position: "top-center" });
       return;
     }
 
@@ -101,7 +102,7 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
   };
 
   return (
-    <div>
+    <main>
       <div className="sticky top-0 z-50 bg-background border-b px-4 py-3 h-14">
         <div className="flex items-center justify-between">
           <div>
@@ -117,16 +118,10 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
             Publish
           </Button>
         </div>
-
-        {error && (
-          <p className="text-red-500 text-xs pt-2 text-center font-bold">
-            {error}
-          </p>
-        )}
       </div>
 
       {/* Form */}
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 p-4 py-5">
         {/* Title */}
         <div className="space-y-2">
           <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
@@ -200,6 +195,6 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
           </Button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

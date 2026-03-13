@@ -4,11 +4,11 @@ import { GalleryVerticalEnd } from "lucide-react";
 import { SignupForm } from "@/components/signup-form";
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth, db } from "../../firebase";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { signupSchema } from "../lib/schemas";
+import { signupSchema } from "../../lib/schemas";
 import { useRouter } from "next/navigation";
-import { handleGoogleAuth } from "@/lib/utils";
+import { handleGoogleAuth } from "@/app/lib/utils";
 
 export default function SignupPage() {
   const [error, setError] = useState("");

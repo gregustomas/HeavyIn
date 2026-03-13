@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
   addDoc,
@@ -9,9 +9,10 @@ import {
   getDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { db } from "../firebase";
-import { CreateWorkoutForm } from "@/components/CreateWorkoutForm";
-import { getUnsplashImage } from "@/lib/unsplash";
+import { db } from "../../firebase";
+
+import { getUnsplashImage } from "@/app/lib/unsplash";
+import { CreateWorkoutForm } from "@/components/workout/CreateWorkoutForm";
 
 function CreateWorkoutPage() {
   const { user } = useAuth();
@@ -53,7 +54,7 @@ function CreateWorkoutPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-25">
       <CreateWorkoutForm onPublish={handleSaveWorkout} />
     </div>
   );

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, signInWithGoogle } from "../firebase";
+import { auth, signInWithGoogle } from "../../firebase";
 import { LoginForm } from "@/components/loginForm";
 import { GalleryVerticalEnd } from "lucide-react";
-import { loginSchema } from "../lib/schemas";
+import { loginSchema } from "../../lib/schemas";
 import { useRouter } from "next/navigation";
-import { handleGoogleAuth } from "@/lib/utils";
+import { handleGoogleAuth } from "@/app/lib/utils";
 
 function LoginPage() {
   const [error, setError] = useState("");

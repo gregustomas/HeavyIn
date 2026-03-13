@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/app/context/AuthContext";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/app/firebase";
 import { Trash2 } from "lucide-react";
@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "../ui/alert-dialog";
 import { useRouter } from "next/navigation";
 
 interface Props {

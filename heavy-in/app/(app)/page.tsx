@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { db } from "./firebase";
-import { WorkoutCard } from "@/components/workout-card";
-import SearchBar from "@/components/searchBar";
+import SearchBar from "@/components/shared/searchBar";
 import {
   Select,
   SelectContent,
@@ -13,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { WorkoutCard } from "@/components/workout/workout-card";
+import { db } from "../firebase";
 
 export default function Home() {
   const [workouts, setWorkouts] = useState<any[]>([]);
@@ -88,7 +88,7 @@ export default function Home() {
         </Select>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mb-15">
         {filteredWorkouts.length > 0 ? (
           filteredWorkouts.map((workout) => (
             <WorkoutCard data={workout} key={workout.id} />

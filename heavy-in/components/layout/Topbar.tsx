@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { AvatarDropdown } from "./ui/AvatarDropdown";
+import { AvatarDropdown } from "../profile/AvatarDropdown";
 
 function Topbar() {
   const pathname = usePathname();

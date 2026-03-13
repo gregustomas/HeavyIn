@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { formatDate } from "@/lib/utils";
+
+import { formatDate } from "@/app/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface UserCardProps {
   author: string | undefined;

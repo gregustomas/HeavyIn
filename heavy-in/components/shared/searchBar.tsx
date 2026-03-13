@@ -5,7 +5,7 @@ import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const SearchBar = () => {
   const [isSearching, setIsSearching] = useState(true);

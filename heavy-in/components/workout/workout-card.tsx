@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/card";
 import { Flame, Zap } from "lucide-react";
 import Link from "next/link";
-import ShareBtn from "./ShareBtn";
-import UserCard from "./UserCard";
-import { Badge } from "./ui/badge";
+import UserCard from "../profile/UserCard";
+import ShareBtn from "../shared/ShareBtn";
+import { Badge } from "../ui/badge";
+
 
 interface Exercise {
   id: string;

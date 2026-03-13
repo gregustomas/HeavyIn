@@ -1,15 +1,14 @@
 import { db } from "@/app/firebase";
-import DeleteWorkoutBtn from "@/components/DeleteWorkoutBtn";
-import ExerciseCard from "@/components/ExerciseCard";
-import ShareBtn from "@/components/ShareBtn";
+import DeleteWorkoutBtn from "@/components/workout/DeleteWorkoutBtn";
+import ExerciseCard from "@/components/workout/ExerciseCard";
+import ShareBtn from "@/components/shared/ShareBtn";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import UserCard from "@/components/UserCard";
 import { doc, getDoc } from "firebase/firestore";
 import { Flame, Zap } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
+import UserCard from "@/components/profile/UserCard";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -103,7 +102,7 @@ async function WorkoutDetailPage({ params }: PageProps) {
             </span>
           </div>
           <div className="grid gap-2">
-            {exercises.map((exercise, index) => (
+            {exercises.map((exercise: any, index: number) => (
               <ExerciseCard data={exercise} index={index} key={index} />
             ))}
           </div>

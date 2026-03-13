@@ -1,9 +1,9 @@
 import { db } from "@/app/firebase";
-import { WorkoutCard } from "@/components/workout-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { WorkoutCard } from "@/components/workout/workout-card";
 
 interface PageProps {
   params: Promise<{ username: string }>;
