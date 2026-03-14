@@ -7,7 +7,11 @@ export const loginSchema = z.object({
 
 export const signupSchema = z
   .object({
-    username: z.string().min(3, "Username musí mít alespoň 3 znaky").max(20),
+    username: z
+      .string()
+      .min(3, "Username musí mít alespoň 3 znaky")
+      .max(20)
+      .regex(/^\S+$/, "Username nesmí obsahovat mezery"),
     email: z.string().email("Neplatný email"),
     password: z.string().min(6, "Heslo musí mít alespoň 6 znaků"),
     confirmPassword: z.string(),
