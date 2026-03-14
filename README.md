@@ -1,59 +1,56 @@
-# 🏋️‍♂️ heavyIn
-**Connect through sweat. Track your progress. Share the grind.**
+# HeavyIn
 
-`heavyIn` je platforma pro fitness nadšence, která kombinuje efektivní plánování tréninků se sociálním prvkem. Aktuálně jsme ve fázi **MVP**, kde se soustředím na to nejpodstatnější: tvorbu a sdílení tvého progresu.
+**Connect through sweat. Share the grind.**
 
----
+[heavyin.vercel.app](https://heavy-in.vercel.app)
 
-## 🚀 O projektu (MVP Status)
-Aktuální verze se zaměřuje na core funkcionalitu pro individuální sportovce.
-
-### **Aktuální funkce:**
-* **Osobní profily:** Tvůj digitální fitness domov se základními statistikami.
-* **Workout Builder:** Intuitivní rozhraní pro vytváření vlastních tréninkových plánů.
-* **Sdílení:** Možnost sdílet své tréninkové rutiny s ostatními uživateli.
-
-### **Vize do budoucna:**
-Plánuji transformaci v **plnohodnotnou, ale minimalistickou sociální síť**, kde uvidíš feed svých přátel, budeš moci reagovat na jejich výkony a společně se hecovat k lepším výsledkům.
+HeavyIn is a fitness platform for athletes who want to build, share, and discover workout plans. Currently in MVP.
 
 ---
 
-## 🛠️ Technologie
-* **Frontend:** Next.js
-* **Backend:** Firebase
-* **Databáze:** Firebase
-* **Styling:** Tailwind CSS
+## Features
+
+- **Workout Builder** – Create structured training plans with exercises, sets, reps and notes
+- **Feed** – Discover workouts from other athletes
+- **Profiles** – Public profile with your training history
+- **Authentication** – Email/password and Google sign-in
+- **Search** – Find athletes by username
 
 ---
 
-## 🏁 Jak začít
+## Stack
 
-1.  **Klonování repozitáře:**
-    ```bash
-    git clone [https://github.com/gregustomas/heavyin.git](https://github.com/gregustomas/heavyin.git)
-    cd heavyin
-    ```
-
-2.  **Instalace závislostí:**
-    ```bash
-    npm install
-    ```
-
-3.  **Spuštění vývojového serveru:**
-    ```bash
-    npm run dev
-    ```
+- **Next.js 16** – App Router, server components
+- **Firebase** – Auth + Firestore
+- **Tailwind CSS v4** + shadcn/ui
+- **Zod** – Form validation
 
 ---
 
-## 🤝 Přispívání
-Budu rád za každý feedback nebo Pull Request!
-1. Forkni projekt.
-2. Vytvoř branch pro svůj feature (`git checkout -b feature/skvela-funkce`).
-3. Commitni změny (`git commit -m 'Přidána skvělá funkce'`).
-4. Pushni do branche (`git push origin feature/skvela-funkce`).
-5. Otevři Pull Request.
+## Getting Started
+
+```bash
+git clone https://github.com/gregustomas/heavyin.git
+cd heavyin
+npm install
+```
+
+Create `.env.local`:
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_UNSPLASH_ACCESS_KEY=
+```
+
+```bash
+npm run dev
+```
 
 ---
 
-> **"Don't just lift heavy, be heavyIn."**
+> "Don't just lift heavy, be HeavyIn."
