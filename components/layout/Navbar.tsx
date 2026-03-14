@@ -3,13 +3,14 @@
 import { useAuth } from "@/app/context/AuthContext";
 import { Home, Plus, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 interface NavLinkProps {
   href: string;
   icon: ReactNode;
   label: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 interface CustomUser {
@@ -23,6 +24,16 @@ function Navbar() {
     loading: boolean;
   };
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleProfileClick = (e: React.MouseEvent) => {
+    if (!user?.username) {
+      e.preventDefault();
+      router.push(
+        `/login?message=${encodeURIComponent("Pro zobrazení profilu se musíš přihlásit.")}`,
+      );
+    }
+  };
 
   if (pathname === "/login" || pathname === "/signup") return null;
 
@@ -37,7 +48,12 @@ function Navbar() {
       <div className="flex items-center justify-around gap-10">
         <NavLink href="/" icon={<Home size={22} />} label="Home" />
         <NavLink href="/create" icon={<Plus size={22} />} label="Create" />
-        <NavLink href={profileHref} icon={<User size={22} />} label="Profile" />
+        <NavLink
+          href={profileHref}
+          onClick={handleProfileClick}
+          icon={<User size={22} />}
+          label="Profile"
+        />
       </div>
     </nav>
   );
@@ -45,9 +61,10 @@ function Navbar() {
 
 export default Navbar;
 
-function NavLink({ href, icon, label }: NavLinkProps) {
+function NavLink({ href, icon, label, onClick }: NavLinkProps) {
   return (
     <Link
+      onClick={onClick}
       href={href}
       className="flex flex-col items-center text-heavy-muted hover:text-heavy-main py-2 px-3 transition-all duration-200"
     >

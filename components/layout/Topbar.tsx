@@ -2,9 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import { AvatarDropdown } from "../profile/AvatarDropdown";
+import Link from "next/link";
+import { useAuth } from "@/app/context/AuthContext";
+import { Button } from "../ui/button";
 
 function Topbar() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   function getTitle() {
     if (pathname.startsWith("/profile/")) return "Profile";
@@ -30,7 +34,13 @@ function Topbar() {
         <h1 className="text-heavy-teal text-3xl font-black tracking-tighter uppercase">
           {getTitle()}
         </h1>
-        <AvatarDropdown />
+        {user ? (
+          <AvatarDropdown />
+        ) : (
+          <Button variant="outline" size="sm">
+            <Link href="/login">Login</Link>
+          </Button>
+        )}
       </div>
     </header>
   );

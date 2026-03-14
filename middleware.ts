@@ -1,30 +1,47 @@
+// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 
-// Stránky dostupné POUZE nepřihlášeným
-const authRoutes = ["/login", "/signup"];
+export function middleware(req: NextRequest) {
+  const token = req.cookies.get("auth-token")?.value;
+  const { pathname } = req.nextUrl;
 
-// Stránky dostupné POUZE přihlášeným
-const protectedRoutes = ["/create", "/profile"];
+  const isPublic =
+    pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname.startsWith("/workout/") ||
+    (pathname.startsWith("/profile/") &&
+      !pathname.startsWith("/profile/undefined"));
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("auth-token")?.value;
-  const { pathname } = request.nextUrl;
+  if (!token && !isPublic) {
+    const loginUrl = new URL("/login", req.url);
 
-  const isLoggedIn = !!token;
-  const isAuthRoute = ["/login", "/signup"].some((r) => pathname.startsWith(r));
+    if (pathname.startsWith("/create")) {
+      loginUrl.searchParams.set(
+        "message",
+        "Pro vytvoření tréninku se musíš přihlásit.",
+      );
+    } else if (
+      pathname === "/profile" ||
+      pathname.startsWith("/profile/undefined")
+    ) {
+      loginUrl.searchParams.set(
+        "message",
+        "Pro zobrazení profilu se musíš přihlásit.",
+      );
+    } else {
+      loginUrl.searchParams.set(
+        "message",
+        "Pro pokračování se musíš přihlásit.",
+      );
+    }
 
-  if (isLoggedIn && isAuthRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  if (!isLoggedIn && !isAuthRoute) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  // Na kterých cestách middleware běží (vynech statické soubory)
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next|favicon.ico|.*\\..*).*)"],
 };

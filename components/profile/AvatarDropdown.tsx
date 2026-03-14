@@ -38,7 +38,11 @@ export function AvatarDropdown() {
       <DropdownMenuContent className="w-32">
         <DropdownMenuGroup>
           <DropdownMenuItem
-            onClick={() => router.push(`/profile/${user?.username}`)}
+            onClick={() =>
+              router.push(
+                user?.username ? `/profile/${user.username}` : "/login",
+              )
+            }
           >
             Profile
           </DropdownMenuItem>
