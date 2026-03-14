@@ -44,7 +44,7 @@ function Navbar() {
   const profileHref = user?.username ? `/profile/${user.username}` : "/login";
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur border-t w-full flex items-center justify-center px-6 py-2 z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur border-t w-full flex items-center justify-center px-6 py-2 z-40 max-w-2xl mx-auto">
       <div className="flex items-center justify-around gap-10">
         <NavLink href="/" icon={<Home size={22} />} label="Home" />
         <NavLink href="/create" icon={<Plus size={22} />} label="Create" />

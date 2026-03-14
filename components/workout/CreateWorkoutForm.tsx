@@ -102,8 +102,8 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
   };
 
   return (
-    <main>
-      <div className="sticky top-0 z-50 bg-background border-b px-4 py-3 h-14">
+    <>
+      <div className="sticky top-0 z-50 bg-background border-b px-4 py-3 h-14 max-w-2xl mx-auto">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-heavy-teal text-3xl font-black tracking-tighter uppercase">
@@ -120,81 +120,83 @@ export function CreateWorkoutForm({ onPublish }: CreateWorkoutFormProps) {
         </div>
       </div>
 
-      {/* Form */}
-      <div className="space-y-4 p-4 py-5">
-        {/* Title */}
-        <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
-            Title <span className="text-[#00b894]">*</span>
-          </Label>
-          <Input
-            placeholder="My workout"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="rounded-lg border-[#e0e0e0] bg-background"
-          />
-        </div>
-
-        {/* Description */}
-        <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
-            Description
-          </Label>
-          <Textarea
-            placeholder="Power based training"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="min-h-20 rounded-lg border-[#00b894] bg-background"
-          />
-        </div>
-
-        {/* Training Split */}
-        <div className="space-y-2">
-          <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
-            Training Split
-          </Label>
-          <Select value={split} onValueChange={setSplit}>
-            <SelectTrigger className="w-full rounded-lg border-[#e0e0e0] bg-background">
-              <SelectValue placeholder="Select split" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="custom">Custom</SelectItem>
-              <SelectItem value="fullbody">Fullbody</SelectItem>
-              <SelectItem value="upper">Upper</SelectItem>
-              <SelectItem value="lower">Lower</SelectItem>
-              <SelectItem value="push">Push</SelectItem>
-              <SelectItem value="pull">Pull</SelectItem>
-              <SelectItem value="legs">Legs</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Cover Image */}
-        <ImageUpload image={coverImage} setImage={setCoverImage} />
-
-        {/* Exercises */}
-        <div className="space-y-4">
-          {exercises.map((exercise, index) => (
-            <ExerciseItem
-              key={index}
-              index={index}
-              data={exercise}
-              onUpdate={updateExercise}
-              onRemove={removeExercise}
+      <main className="page-container">
+        {/* Form */}
+        <div className="space-y-4 p-4 py-5">
+          {/* Title */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+              Title <span className="text-[#00b894]">*</span>
+            </Label>
+            <Input
+              placeholder="My workout"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="rounded-lg border-[#e0e0e0] bg-background"
             />
-          ))}
+          </div>
 
-          {/* Add Exercise Button */}
-          <Button
-            variant="outline"
-            className="w-full rounded-lg border-dashed border-[#e0e0e0] text-[#5c5a57] hover:border-[#00b894] hover:text-[#00b894]"
-            onClick={addExercise}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add exercise
-          </Button>
+          {/* Description */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+              Description
+            </Label>
+            <Textarea
+              placeholder="Power based training"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-20 rounded-lg border-[#00b894] bg-background"
+            />
+          </div>
+
+          {/* Training Split */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold uppercase tracking-wide text-[#5c5a57]">
+              Training Split
+            </Label>
+            <Select value={split} onValueChange={setSplit}>
+              <SelectTrigger className="w-full rounded-lg border-[#e0e0e0] bg-background">
+                <SelectValue placeholder="Select split" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="custom">Custom</SelectItem>
+                <SelectItem value="fullbody">Fullbody</SelectItem>
+                <SelectItem value="upper">Upper</SelectItem>
+                <SelectItem value="lower">Lower</SelectItem>
+                <SelectItem value="push">Push</SelectItem>
+                <SelectItem value="pull">Pull</SelectItem>
+                <SelectItem value="legs">Legs</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Cover Image */}
+          <ImageUpload image={coverImage} setImage={setCoverImage} />
+
+          {/* Exercises */}
+          <div className="space-y-4">
+            {exercises.map((exercise, index) => (
+              <ExerciseItem
+                key={index}
+                index={index}
+                data={exercise}
+                onUpdate={updateExercise}
+                onRemove={removeExercise}
+              />
+            ))}
+
+            {/* Add Exercise Button */}
+            <Button
+              variant="outline"
+              className="w-full rounded-lg border-dashed border-[#e0e0e0] text-[#5c5a57] hover:border-[#00b894] hover:text-[#00b894]"
+              onClick={addExercise}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add exercise
+            </Button>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

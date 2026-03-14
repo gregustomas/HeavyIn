@@ -46,7 +46,7 @@ export function WorkoutCard({ data }: { data: WorkoutCardProps }) {
   } = data;
 
   return (
-    <Card className="w-full max-w-md border-0 bg-card shadow overflow-hidden">
+    <Card className="w-full border-0 bg-card shadow overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between gap-4 pb-2">
         <UserCard author={author} avatarUrl={avatarUrl} date={createdAt} />
         <ShareBtn id={id} title={title} />

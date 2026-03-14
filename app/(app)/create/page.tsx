@@ -54,7 +54,7 @@ function CreateWorkoutPage() {
   };
 
   return (
-    <div className="min-h-screen pb-25">
+    <div className="min-h-screen pb-6">
       <CreateWorkoutForm onPublish={handleSaveWorkout} />
     </div>
   );
