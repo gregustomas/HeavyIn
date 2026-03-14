@@ -66,7 +66,7 @@ async function WorkoutDetailPage({ params }: PageProps) {
   } = workout;
 
   return (
-    <main className="page-container">
+    <main className="page-container p-0">
       <div className="relative w-full h-56 md:h-72">
         <Image
           src={image || "/cbum.avif"}
