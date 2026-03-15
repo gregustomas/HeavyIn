@@ -79,7 +79,7 @@ async function WorkoutDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="page-container pt-0">
+      <div className="page-container pt-0 mb-10">
         <Card className="-mt-6 relative z-10 shadow-sm">
           <CardContent className="pt-4 pb-4">
             <div className="flex justify-between items-start mb-3">
