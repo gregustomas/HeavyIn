@@ -1,29 +1,37 @@
 # HeavyIn
 
-**Connect through sweat. Share the grind.**
+A fitness social platform for athletes to build, share, and discover workout training plans.
 
-[heavyin.vercel.app](https://heavy-in.vercel.app)
+[heavyin.vercel.app](https://heavyin.vercel.app)
 
-HeavyIn is a fitness platform for athletes who want to build, share, and discover workout plans. Currently in MVP.
+---
+
+## Demo
+
+![Screenshots](public/screens.png)
 
 ---
 
 ## Features
 
-- **Workout Builder** – Create structured training plans with exercises, sets, reps and notes
-- **Feed** – Discover workouts from other athletes
-- **Profiles** – Public profile with your training history
-- **Authentication** – Email/password and Google sign-in
-- **Search** – Find athletes by username
+- **Workout Builder** – Create structured training plans with exercises, sets, reps, and notes
+- **Feed** – Discover and filter workouts from the community by split type (Push, Pull, Legs, Fullbody...)
+- **Public Profiles** – View any athlete's training history and published workouts
+- **Authentication** – Email/password and Google OAuth sign-in
+- **User Search** – Find athletes by username
+- **Workout Sharing** – Share workouts with Open Graph previews on social media
+- **Settings** – Update profile, change password, delete account
 
 ---
 
 ## Stack
 
-- **Next.js 16** – App Router, server components
-- **Firebase** – Auth + Firestore
-- **Tailwind CSS v4** + shadcn/ui
+- **Next.js 16** – App Router, server components, TypeScript
+- **Firebase** – Firestore database + Auth (email/password, Google OAuth)
+- **Tailwind CSS v4** + shadcn/ui + Radix UI
 - **Zod** – Form validation
+- **Unsplash API** – Auto-generated workout cover images
+- **Vercel** – Deployment
 
 ---
 
@@ -51,6 +59,5 @@ NEXT_PUBLIC_UNSPLASH_ACCESS_KEY=
 npm run dev
 ```
 
----
+Open [http://localhost:3000](http://localhost:3000).
 
-> "Don't just lift heavy, be HeavyIn."
